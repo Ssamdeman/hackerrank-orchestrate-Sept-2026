@@ -63,17 +63,22 @@ Hard invariants, enforced by the validator before any file is written:
 
 ### 3.1 Inclusion matrix
 
-| `status` | Rows | `direction` | Treatment |
+| status | Rows | direction | Treatment |
 |---|---|---|---|
-| `settled` | 25,148 | debit / credit | **Include.** Historical fact; also the substrate for recurrence reconstruction (§4) |
-| `scheduled` | 70 | debit / credit | **Include.** These are the "confirmed future payments" and the "next confirmed salary" `[ASSUMED-1]` |
-| `pending` | 71 | **debit** | **Include** as an encumbrance on its effective date `[ASSUMED-2]` |
-| `pending` | 71 | **credit** | **Exclude.** Named explicitly in DNA.md `[SPEC]` |
-| `cancelled` | 22 | any | **Exclude** `[SPEC]` |
-| `failed` | 21 | any | **Exclude** `[SPEC]` |
-| `unrealized` | 10 | `non_cash` | **Exclude** `[SPEC]` |
+| settled | 25,148 | debit / credit | **Include.** Historical fact; substrate for recurrence reconstruction (§4) |
+| scheduled | 70 | debit | **Include.** Confirmed future obligation [SPEC] |
+| scheduled | 70 | credit | **Include, pending inspection.** See below [ASSUMED-1, under verification] |
+| pending | 71 | debit | **Include** as an encumbrance on its effective date [ASSUMED-2] |
+| pending | 71 | credit | **Exclude.** Named explicitly in DNA.md [SPEC] |
+| cancelled | 22 | any | **Exclude [SPEC]** |
+| failed | 21 | any | **Exclude [SPEC]** |
+| unrealized | 10 | non_cash | **Exclude [SPEC]** |
 
-**Note on `unrealized`.** The profile shows `unrealized` (10) = `non_cash` (10) = `investment_valuation` (10). These are the same 10 rows. A single exclusion rule on `status == 'unrealized'` removes all of them; no separate `non_cash` or `investment_valuation` handling is required. `[DERIVED]`
+scheduled is not pending. They are distinct status values in this schema — 70 and 71 rows respectively. DNA.md's exclusion names pending credits only. It separately instructs forecasting from "confirmed future payments" and states that financial_events.csv contains "the next confirmed salary." A scheduled credit is confirmed; a pending credit carries settlement risk. The schema draws the line, not us. [SPEC]
+
+Resolved by inspection, not policy. The phantom-liquidity risk — passing the safety check on income that never lands — is the most dangerous failure mode available to this system. But the entire disputed population is 70 rows. Rather than rule from theory, verification 4 enumerates all 70 and reports the event_type / category / direction breakdown. If scheduled credits are salary, the inclusion is proven. If any is speculative, it is excluded by name. This converts ASSUMED-1 into fact at a cost of one query. [VERIFY-4]
+
+On unrealized. unrealized (10) = non_cash (10) = investment_valuation (10) — the same 10 rows. A single exclusion on status == 'unrealized' removes all of them. [DERIVED]
 
 ### 3.2 Sign convention
 
@@ -87,9 +92,17 @@ non_cash → excluded entirely, never touches the balance
 
 Code must never infer direction from sign.
 
-### 3.3 Date to use
+### 3.3 Which date to use — two distinct purposes
 
-`settlement_date` where present (null on 10 rows only), otherwise `event_date`. `[ASSUMED-3]`
+event_date and settlement_date are not interchangeable. Each field serves one purpose and must not be used for the other. [ACCEPTED-REVIEW]
+
+Purpose	Field	Rationale
+Cadence inference (§4) — deriving the recurrence interval of a series	event_date	Billing dates are regular by construction. Settlements shift around weekends and holidays, producing noise like 33 / 27 / 31 that corrupts interval inference and drifts projections across the 90-day boundary
+Balance reconstruction (§2) — the day money actually moves	settlement_date, falling back to event_date on the 10 nulls	The balance changes when the transaction settles, not when it is billed
+
+Using settlement_date for cadence would introduce mathematical noise into every projected series. Using event_date for balance would misdate every cash movement. Both errors are silent.
+
+Profile support: event_date has 1,308 distinct values, settlement_date has 1,310, over identical ranges (2019-03-09 to 2026-09-03). They coincide on most rows — which is exactly why a naive implementation passes casual testing and fails on the rows that matter.
 
 ### 3.4 Duplicates
 
@@ -98,37 +111,87 @@ DNA.md orders that duplicate records be ignored, but `financial_events.csv` has 
 This section is **conditional**. If the duplicate scan (verification 3) returns zero collisions, this logic is removed from the build entirely rather than carried as dead code.
 
 ### 3.5 Blank amounts
+Exactly 16 rows had a null amount, all mapping 1:1 to images.csv. A blank amount is never zero. [SPEC]
 
-Exactly 16 rows have a null `amount`, and all 16 map 1:1 to a row in `images.csv`. A blank amount is **never** zero. `[SPEC]`
+Phase 0.2 complete. All 16 values were extracted from source PNGs and human-verified. They are frozen in src/buy_or_wait/data/image_amounts.json and merged into financial_events at load time. No vision model runs during scoring. [RESOLVED]
 
-The 16 blocked events: `event_253`, `event_1442`, `event_1545`, `event_1700`, `event_1786`, `event_3051`, `event_3231`, `event_4535`, `event_5170`, `event_6033`, `event_6859`, `event_7307`, `event_7941`, `event_9421`, `event_9806`, `event_10521`.
+event_id | Amount | Currency | Note
+event_253 | 4365000.00 | IDR | Net salary — feeds the income series
+event_1442 | 100000.00 | INR | Lakh notation 1,00,000.00 normalized
+event_1545 | 41272.00 | INR | 
+event_1700 | 2870.00 | INR | Flagged — grand total cropped
+event_1786 | 704.05 | INR | 
+event_3051 | 1995.00 | INR | 
+event_3231 | 8528.00 | INR | Flagged — rounded from 8528.10
+event_4535 | 15339.00 | INR | 
+event_5170 | 723.00 | INR | 
+event_6033 | 79679.26 | INR | 
+event_6859 | 3650.00 | INR | 
+event_7307 | 33.50 | USD | Only non-INR/IDR of the set — FX applies (§5)
+event_7941 | 2298.00 | INR | 
+event_9421 | 4543.00 | INR | Rs/Ps column split 4543 00 normalized
+event_9806 | 9968.00 | INR | 
+event_10521 | 393.22 | INR | 
 
-Until Phase 0.2 supplies these values, any forecast touching one of these 16 users is **incomplete and must not be scored as final**. The engine flags the request rather than silently proceeding on a partial balance.
+Normalization applied. Three values were not machine-parseable as extracted:
 
+event_1442 — 1,00,000.00 is Indian lakh grouping, not a thousands separator. A naive separator strip yields the correct 100000.00, but a locale-aware parser could misread it. Hardcoded.
+event_9421 — 4543 00 is a handwritten Rs./Ps. two-column receipt. The space is the decimal point. Verified against the line-item sum: 1500 + 724 + 796 + 550 + 303 + 670 = 4543.
+event_7941 — 2,298 separator only.
+
+Flag rationale.
+
+event_1700 — the receipt's grand total is cropped off the image. The visible Item Bill is 2854.00, with a partial line of 16.00 below it. Under §10.1 rule 4, the financially safer interpretation of an ambiguous debit is the higher figure, so 2870.00 is used. Overstating a grocery outflow by 16 INR is negligible; understating it risks a false safety pass. [ASSUMED-12]
+
+event_3231 — the bill prints an unrounded Total of 8528.10 and a payable Grand Total of 8528. The amount actually charged is authoritative. [ASSUMED-13]
+
+event_253 is structurally significant. It is the only income row among the 16. Until resolved, user_03's salary series carried a gap, and recurrence reconstruction (§4) was projecting forward from incomplete history.
+
+    Calibration overlap — highest-value test in the project. image_01, image_02, and image_03 link to request_03, request_16, and request_17 — all inside sample_requests.csv. Three image-dependent users have published ground truth. These three requests exercise image ingestion, FX, recurrence reconstruction, forecasting, ranking, and explanation generation end to end against known-correct output. They are the primary regression test.
 ---
 
 ## 4. Recurrence reconstruction
 
-**This is the highest-risk deterministic component in the build.**
+Highest-risk deterministic component in the build.
 
-`financial_events.csv` has **no `is_recurring` column and no recurrence-interval column**. `request_payment_options.csv` has `payment_frequency_days`, but that governs *request financing*, not the user's existing obligations. Recurrence must be reconstructed from history. `[DERIVED]`
+financial_events.csv has no is_recurring column and no recurrence-interval column. payment_frequency_days in request_payment_options.csv governs request financing only, not the user's existing obligations. Recurrence must be reconstructed from history. [DERIVED]
 
-Requirements on the reconstruction:
+### 4.1 Series key
+(user_id, description, category, direction)
 
-1. Group candidate series by `(user_id, description, category, direction)`. `description` has only 164 distinct values across 25,342 rows, so it is a stable series key. `[DERIVED]`
-2. Infer the interval from the spacing of `event_date` within each group. Monthly cadence is expected to dominate; do not hardcode 30 days.
-3. Project the series forward across the 90-day window from the last observed occurrence.
-4. Amount for the projected occurrence: the most recent settled amount in the series. `[ASSUMED-5]`
-5. A series must be distinguished from one-time purchases, transfers, refunds, and unusual events. `[SPEC]`
+description is semantic, not a generic transaction label. [DERIVED] The 164 distinct values are specific: "Outstanding telecom bill", "Property maintenance invoice", "EV charging wallet payment", "Bulk groceries and pantry purchase". Calibration explanations reference "the family streaming plan", "the weekend food delivery", "the online backup subscription" — all drawn from this field. These are not Card Purchase or ACH Transfer.
 
-**Signals available for recurring-ness:**
+164 descriptions across 275 users means descriptions are a shared vocabulary, reused across users. Within a single user they are expected to be near-unique, which is why user_id leads the key.
 
-- `event_type` of `subscription` (2,488) or `debt_payment` (567) is strong evidence.
-- `event_type` of `income` (1,696) with `category == 'salary'` (1,690) is the salary series.
-- `flexibility != 'fixed'` (4,204 rows) implies the event is a controllable commitment — i.e. recurring — since a one-off purchase has nothing to reduce or stop.
-- `event_type` of `refund` (22), `investment_sale` (5), `investment_purchase` (29) are one-time by nature.
+Amount-based sub-clustering is explicitly rejected. [REJECTED-REVIEW] A tolerance band (e.g. ±5%) to split series by amount would:
 
-**Non-recurring by definition:** `refund`, `investment_valuation`, `investment_sale`, `investment_purchase`.
+introduce a magic constant with no basis in the data
+split legitimate variable-amount series — utility bills routinely swing well beyond 5%
+contradict the schema, since every reducible event carries a minimum_allowed_amount precisely because its amount is expected to vary
+
+The stated failure mode — a user's streaming, gym, and electricity collapsing into one series — cannot occur. Those carry different description and different category (streaming, gym, utilities), both already in the key.
+
+Validated empirically, not assumed. [VERIFY-5] Rather than guessing a threshold, count (user_id, description, category, direction) groups whose event_date gaps are bimodal — the signature of two interleaved series sharing a key. If the count is zero, the key is proven sufficient and no sub-clustering logic is written. If non-zero, the affected groups are inspected individually and a targeted rule is written for them. Evidence, not a constant.
+
+### 4.2 Interval inference
+Order the series by event_date (§3.3 — never settlement_date).
+Compute the modal gap between consecutive occurrences.
+Do not hardcode 30 days. Monthly cadence is expected to dominate, but weekly, fortnightly, and quarterly series must survive.
+Require a minimum of 3 occurrences before declaring a series recurring. Two points define an interval but not a pattern. [ASSUMED-14]
+### 4.3 Forward projection
+Project from the last observed occurrence across the 90-day window.
+Amount for each projected occurrence: the most recent settled amount in the series. [ASSUMED-5]
+Apply each projected flow on its projected date; the balance test (§2) is evaluated daily.
+### 4.4 Recurrence signals
+Signal | Rows | Strength
+---|---|---
+ event_type == 'subscription' | 2,488 | Strong — recurring by definition
+ event_type == 'debt_payment' | 567 | Strong
+ event_type == 'income' and category == 'salary' | 1,690 | Strong — the salary series
+ flexibility != 'fixed' | 4,204 | Strong — a one-off purchase has nothing to reduce or stop, so controllability implies commitment
+
+Non-recurring by definition: refund (22), investment_valuation (10), investment_sale (5), investment_purchase (29).
+
 
 ---
 
@@ -267,10 +330,24 @@ Supporting evidence: `minimum_allowed_amount` is non-null on exactly 2,907 rows 
 `new_amount` renders under the §7.1 numeric rule: `665950`, `23.50`.
 
 ### 8.4 Which `event_id` to cite
+A recurring obligation spans many rows; the change string cites exactly one event_id.
 
-A recurring obligation spans many rows. The change string cites **one** `event_id`. Working rule: cite the **most recent occurrence** of the series as of `request_date`. `[ASSUMED-8]`
+Rule: cite the most recent occurrence in the series, as of request_date, whose row carries the metadata authorizing the operation. [ASSUMED-8, revised]
 
----
+- redu`ce_to → the row must have a non-null minimum_allowed_amount
+- stop → the row's flexibility must be stoppable or reducible_or_stoppable
+
+The metadata lives on settled historical rows, not scheduled ones. [DERIVED] Proven by row count:
+
+minimum_allowed_amount non-null:  2,907 rows
+scheduled rows (all types):          70 rows
+
+2,907 cannot be a subset of 70. The 2,907 reconciles exactly to 2,682 reducible + 225 reducible_or_stoppable. Separately, flexibility has zero nulls across all 25,342 rows — it is present on every row including settled history. Any rule that looks for authorizing metadata on forward-dated rows will find almost nothing and fail on nearly every eligible series.
+
+The metadata-bearing filter is nonetheless the correct mechanism, and is now part of the rule: never cite a row that lacks the field the operation depends on.
+
+    Verification. event_476, event_989, event_1815, event_1816 from the calibration set — confirm each is the latest metadata-bearing occurrence of its series as of that request's date. [VERIFY-6]
+    ---
 
 ## 9. Candidate generation and ranking
 
@@ -480,54 +557,64 @@ Every assertion must pass before `output.csv` is written. A failure is a **build
 28. `installments` ⟹ `number_of_payments <= max_installment_months`
 
 **Data completeness**
-
-29. No request depends on one of the 16 unresolved blank-amount events (§3.5) unless Phase 0.2 has supplied the value
+29. All 16 formerly-blank events resolve to a non-null positive amount from
+    image_amounts.json at load time; a null survivor is a build stop
+30. Cadence inference reads event_date only; balance reconstruction reads
+    settlement_date with event_date fallback — never the reverse
+31. Every cited event_id in spending_changes_needed carries the metadata its
+    operation requires (non-null minimum_allowed_amount for reduce_to;
+    stoppable or reducible_or_stoppable flexibility for stop)
+32. No scheduled credit enters the forecast unless it appears on the
+    inspected-and-approved list from VERIFY-4
+33. requests 03, 16, and 17 reproduce their sample_requests.csv ground truth
+    exactly across all seven output fields
 
 ---
 
 ## 13. Open assumptions register
 
 Every `[ASSUMED]` in this document, with its resolution path. These are the failure surface.
-
-| # | Assumption | Impact | How it gets resolved |
-|---|---|---|---|
-| 1 | `scheduled` events are included, both directions | High — this is the confirmed-salary channel | Compare a sample user's forecast with and without |
-| 2 | Pending debits included, pending credits excluded | Medium — 71 rows | Ruled. DNA.md isolates credits only |
-| 3 | `settlement_date` preferred over `event_date` | Low — 10 nulls | Check whether the two ever differ materially |
-| 4 | Duplicate detection key | Low if zero collisions | **Verification 3** — if zero, delete the logic |
-| 5 | Projected recurring amount = latest settled amount | High | Check amount variance within series |
-| 6 | `number_of_payments <= max_installment_months` | Medium | Confirm against a calibration user with a long option |
-| 7 | `reduce_to` = `minimum_allowed_amount` | High — direct scoring impact | **Verification 1** — check `event_989` = 665950, `event_1816` = 23.50 |
-| 8 | Cite the most recent occurrence's `event_id` | High — direct scoring impact | Inspect `event_476`, `event_1815`, `event_1816` positions in their series |
-| 9 | `payment_option_id` compared numerically | Low — final tie-breaker only | Inspect the ID format |
-| 10 | `{FLOOR}` is the forecast trough; form selected by `FLOOR == MIN` | Medium — explanation text | Recompute the 25 calibration troughs and compare |
-| 11 | `{DATE}` slot sources per template | Medium — explanation text | Same recomputation |
+Assumption | Impact | Resolution
+---|---|---
+1 | scheduled credits included | High — phantom liquidity | VERIFY-4 — enumerate all 70
+2 | Pending debits in, pending credits out | Medium | Ruled. DNA.md isolates credits
+3 | settlement_date preferred | — | SUPERSEDED. Split by purpose, §3.3
+4 | Duplicate detection key | Low | VERIFY-3 — delete the logic if zero collisions
+5 | Projected amount = latest settled amount | High | Check within-series amount variance
+6 | number_of_payments <= max_installment_months | Medium | Confirm against a long-option calibration user
+7 | reduce_to = minimum_allowed_amount | High — direct scoring | VERIFY-1 — event_989 = 665950, event_1816 = 23.50
+8 | Latest metadata-bearing occurrence cited | High — direct scoring | VERIFY-6 — revised per review
+9 | payment_option_id compared numerically | Low | Inspect the ID format
+10 | {FLOOR} = forecast trough; form by FLOOR == MIN | Medium | Recompute 25 calibration troughs
+11 | {DATE} slot sources per template | Medium | Same recomputation
+12 | event_1700 = 2870.00 | Low — 16 INR, one user | Unresolvable; source cropped. Safer-interpretation rule applied
+13 | event_3231 = 8528.00 | Low — 0.10 INR | Unresolvable; both figures printed. Charged amount wins
+14 | Minimum 3 occurrences to declare a series | Medium | Sweep 2 vs 3 vs 4 against calibration
 
 ### Pending verifications
 
-| # | Question | Settles |
-|---|---|---|
-| 1 | `minimum_allowed_amount` for `event_989` and `event_1816` | ASSUMED-7 |
-| 2 | Does event history extend past `request_date` for calibration users? | Lookahead legitimacy vs. leakage — affects §2 and §4 |
-| 3 | Count of exact `(user_id, amount, event_date, description)` collisions | ASSUMED-4; possible deletion of §3.4 |
+| # | Question | Settles | Cost |
+|---|---|---|---|
+| 1 | `minimum_allowed_amount` for `event_989`, `event_1816` | ASSUMED-7 | One lookup |
+| 2 | Does event history extend past `request_date`? | Lookahead legitimacy vs. leakage | One query |
+| 3 | Exact `(user_id, amount, event_date, description)` collision count | ASSUMED-4; possible deletion of §3.4 | One query |
+| 4 | Full breakdown of all 70 scheduled rows | ASSUMED-1 — the phantom-liquidity risk | One query |
+| 5 | Count of series keys with bimodal event_date gaps | §4.1 key sufficiency | One query |
+| 6 | Series position of event_476, event_989, event_1815, event_1816 | ASSUMED-8 | One query |
 
 ---
 
 ## 14. Cost posture
 
 Recorded here because `evaluation/usage_report.md` is a scored deliverable.
+Deterministic — zero model calls: forecasting, safety test, candidate generation, ranking, plan construction, spending-change selection, explanation text, validation.
 
-**Deterministic — zero model calls:**
-forecasting, the safety test, candidate generation, ranking, plan construction, spending-change selection, explanation text, validation.
+Job | Volume | Status
+---|---|---
+Image amount extraction | 16 | DONE — frozen to image_amounts.json. Never re-runs.
+Message → typed amendment | ≤ 215, one-time | Cacheable; only the 39 event-linked messages may be required
 
-**Model calls — bounded and small:**
-
-| Job | Volume | Note |
-|---|---|---|
-| Image amount extraction | **16 calls, one-time** | Cacheable to disk; never re-run |
-| Message → typed amendment | **≤ 215 calls, one-time** | Cacheable; only the 39 event-linked messages may prove necessary |
-
-Upper bound is roughly 231 calls for a 250-request dataset — **under one call per request, and zero at inference time.** Both jobs produce a cached structured artifact; the main run reads the cache and makes no calls at all.
+Scoring-time model calls: zero. Both extraction jobs produce cached structured artifacts. The run that produces output.csv reads the cache and calls nothing.
 
 ---
 
@@ -536,3 +623,4 @@ Upper bound is roughly 231 calls for a 250-request dataset — **under one call 
 | Version | Change |
 |---|---|
 | 0.1 | Initial contract. Invariant "installments implies no spending changes" **removed** following review — it was an overfit to 5 calibration rows and contradicts DNA.md. `amount_safe_to_pay = 0.0` explicitly permitted. A/B/C ruled: `reduce_to` = `minimum_allowed_amount`; no hardcoded payment count; pending debits included. Gaps added for `scheduled` status and undetectable duplicates. |
+| 0.2 | Phase 0.2 resolved — 16 image amounts extracted, human-verified, frozen to image_amounts.json; §3.5 completeness block lifted; 2 values flagged (ASSUMED-12, -13); requests 03/16/17 identified as the end-to-end ground-truth test. Review rulings — ACCEPTED: event_date/settlement_date split by purpose (§3.3, supersedes ASSUMED-3); metadata-bearing-row filter for spending-change citation (§8.4). REJECTED: amount-band sub-clustering in §4.1 (magic constant, splits legitimate variable-amount series, premise contradicted by observed description semantics); scheduled-credit exclusion by policy (2,907 vs 70 row count refutes the premise; resolved by inspection as VERIFY-4 instead). Verifications expanded from 3 to 6. |
