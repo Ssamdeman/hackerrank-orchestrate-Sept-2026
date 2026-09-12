@@ -24,9 +24,10 @@ Status values: `not started` · `in progress` · `blocked` · `gate failed` · `
 
 | Sub-phase | Deliverable | Gate | Command | Status | Signed off |
 |---|---|---|---|---|---|
-| 1.0a | `pyproject.toml` complete | Deps declared; `uv sync` clean | `uv sync` | not started | |
-| 1.0b | `src/observability/` | ERROR→file, INFO/WARN→console, DEBUG opt-in; every record carries stage + request_id | `uv run python -m src/observability/selftest` | not started | |
-| 1.0c | mypy strict gate | Clean on all existing source | `uv run mypy --strict src/` | not started | |
+| 1.0a | `pyproject.toml` complete | Deps declared; `uv sync` clean | `uv sync` | passed | |
+| 1.0b | `src/observability/` | ERROR→file, INFO/WARN→console, DEBUG opt-in; every record carries stage + request_id | `uv run python -m observability.selftest` | passed | |
+| 1.0c | mypy strict gate | Clean on all existing source | `uv run mypy --strict src/` | passed | |
+
 
 ---
 
