@@ -38,13 +38,16 @@ Each has a default if unresolved — none can block the build.
 
 | # | Question | Closes | Result | Status | Signed off |
 |---|---|---|---|---|---|
-| V1 | `minimum_allowed_amount` for `event_989`, `event_1816` | ASSUMED-7 | | not started | |
-| V2 | Does event history extend past `request_date`? | Lookahead legitimacy | | not started | |
-| V3 | Exact duplicate collision count | ASSUMED-4 | | not started | |
-| V4 | Breakdown of all 70 `scheduled` rows | ASSUMED-1 — **priority** | | not started | |
-| V5 | Series keys with bimodal `event_date` gaps | §4.1 key sufficiency | | not started | |
-| V6 | Series position of the 4 cited spending-change events | ASSUMED-8 | | not started | |
-| V7 | `request_text` audit — amounts, dates, method language | §4.13 | | not started | |
+| V1 | `minimum_allowed_amount` for `event_989`, `event_1816` | ASSUMED-7 | `event_989=665950.0`, `event_1816=23.5` | passed | |
+| V2 | Does event history extend past `request_date`? | Lookahead legitimacy | 0 settled past request_date; 42 scheduled credits past request_date | passed | |
+| V3 | Exact duplicate collision count | ASSUMED-4 | 0 collisions on (user_id, amount, event_date, description) | passed | |
+| V4 | Breakdown of all 70 `scheduled` rows | ASSUMED-1 — **priority** | 47 credits (all salary), 23 debits (11 util, 5 edu, 5 ins, 1 rent, 1 health); 2 null amounts (events 1442, 6859) | passed | |
+| V5 | Series keys with bimodal `event_date` gaps | §4.1 key sufficiency | 231 of 4,510 series >= 3 events (5.1%) have bimodal gaps | passed | |
+| V6 | Series position of the 4 cited spending-change events | ASSUMED-8 | All 4 cited events are latest (reverse index 1 of N, latest metadata-bearing) | passed | |
+| V7 | `request_text` audit — amounts, dates, method language | §4.13 | 100% amounts match requested_amount (inc. IDR dot format); 0 text conflicts | passed | |
+| V8 | Composition of bimodal series keys | §4.1 bimodal nature | 231 series: 219 debit (109 transport, 80 groceries, 30 dining), 12 credit (salary); 9 reducible, 222 fixed | passed | |
+| V9 | Distribution & composition of sub-threshold series (< 3 events) | Recurrence handling | 3,492 series: 1,893 count=1, 1,599 count=2; event_989 is count=2; 289 count=2 are reducible | passed | |
+
 
 **V4 is the priority.** It is the only open item that can produce a dangerous
 wrong answer rather than an inaccurate one.
@@ -57,7 +60,7 @@ From `architecture.md` §7. Each phase gates the next.
 
 | Phase | Builds | Gate | Status | Signed off |
 |---|---|---|---|---|
-| 1 | `models.py`, `io/loaders.py`, `state/fx.py` | All 9 CSVs load; 16 amounts merge; all 140 FX events resolve | not started | |
+| 1 | `models.py`, `dataio/loaders.py`, `state/fx.py` | All 9 CSVs load; 16 amounts merge; all 140 FX events resolve | passed | |
 | 2 | `llm/extract_messages.py` → frozen JSON; `state/amendments.py` | Amendments apply cleanly; nothing outside the typed set | not started | |
 | 3 | `state/recurrence.py` | Diagnostic report hand-reviewed for 5 users; V5 clean | not started | |
 | 4 | `forecast/engine.py`, `verify/safety.py` | `amount_safe_to_pay` matches on requests 03, 16, 17 | not started | |
