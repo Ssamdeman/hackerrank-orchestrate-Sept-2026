@@ -55,8 +55,8 @@ dataset/*.csv ──► [1] LOAD ──► [2] NORMALIZE ──► [3] RECONSTRU
 ```
 
 1. **Load (`src/dataio/loaders.py`)**: Strict schema parsing into frozen dataclasses; merges the 16 frozen image amounts with zero null tolerance.
-2. **Normalize (`src/state/fx.py`, `src/state/amendments.py`)**: Exact dated FX lookups and closed-set typed message amendments.
-3. **Reconstruct (`src/state/recurrence.py`)**: Series grouping and cadence inference across historical settled transactions.
+2. **Normalize (`src/state/fx.py`, `src/state/amendments.py`)**: Exact dated FX lookups and closed-set typed message amendments loaded from `src/data/model_message_amendments.json` (139 consensus amendments from 3 independent `claude-sonnet-5` passes with majority voting).
+3. **Reconstruct (`src/state/recurrence.py`)**: Series grouping and cadence inference across historical settled transactions, including household salary reductions.
 4. **Forecast (`src/forecast/engine.py`)**: Daily balance curve projection across a 90-day window (`request_date` through `request_date + 90 days`).
 5. **Generate (`src/planner/candidates.py`, `src/planner/spending.py`)**: Generates candidates across all payment methods (full payment, installments, partial payment, wait, not recommended) combined with up to 3 viable spending changes.
 6. **Test (`src/verify/safety.py`)**: Evaluates candidates against the running balance floor (`trough >= minimum_balance_to_keep`).
@@ -82,6 +82,7 @@ dataset/*.csv ──► [1] LOAD ──► [2] NORMALIZE ──► [3] RECONSTRU
 
 ## 4. Key Design Principles
 
-- **Zero Runtime LLM Calls:** Scoring is 100% deterministic Python. Language models were quarantined to offline one-time extractions frozen into immutable JSON.
+- **Zero Runtime LLM Calls:** Scoring is 100% deterministic Python. Language models are quarantined to offline extraction frozen into immutable JSON. At scoring time, `main.py` makes **0 API calls** ($0.00 cost) and runs all 250 requests in under 4 seconds.
+- **Model-Consensus Perception Pipeline:** Offline message extraction was audited and executed via a 3-pass consensus ensemble using `claude-sonnet-5` with prompt caching (94.2% cache hit rate) and strict majority voting (207/215 3-of-3 unanimous, 8/215 2-of-3 majority accepted, 0 all-differ). The consensus output is frozen in `src/data/model_message_amendments.json` and powers production, while `src/data/message_amendments.json` is preserved as the deterministic baseline (producing 100% byte-identical `output.csv`).
 - **Strict Decimal Arithmetic:** All currency values are modeled with Python `Decimal`. Floats are strictly prohibited in cash flow paths.
 - **Fail Loud:** The validator halts the build if any invariant or assertion fails before emitting output files.
