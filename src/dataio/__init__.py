@@ -16,7 +16,10 @@ from .loaders import (
     load_sample_requests,
 )
 
+from .writer import HEADER, write_output_csv
+
 __all__ = [
+    "HEADER",
     "load_all",
     "load_exchange_rates",
     "load_financial_events",
@@ -28,4 +31,5 @@ __all__ = [
     "load_request_payment_options",
     "load_requests",
     "load_sample_requests",
+    "write_output_csv",
 ]

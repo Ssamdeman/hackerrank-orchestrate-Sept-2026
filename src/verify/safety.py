@@ -23,7 +23,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 from typing import Sequence
 
 from forecast.engine import BalanceCurve, project
@@ -259,7 +259,8 @@ def compute_amount_safe_to_pay(context: UserContext) -> Decimal:
     )
 
     margin = baseline_curve.trough() - context.minimum_balance_to_keep
-    return min(context.requested_amount, max(Decimal("0"), margin))
+    raw_safe = min(context.requested_amount, max(Decimal("0"), margin))
+    return raw_safe.quantize(Decimal("0.01"), rounding=ROUND_DOWN)
 
 
 def earliest_date_for_full_payment(context: UserContext) -> date | None:
