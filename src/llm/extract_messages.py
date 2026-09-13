@@ -77,7 +77,8 @@ You must emit ONLY from this closed set of 10 action types:
    - Case A: "first salary from the NEW employer" -> TERMINATE_SERIES (final_date is the start date of the new employer)
    - Case B: "seasonal contract has ended" / "employment has ended" / "kontrak musiman telah berakhir" / "no regular salary payments scheduled after..."
      Format: {"action": "TERMINATE_SERIES", "series_key": "salary", "final_date": "YYYY-MM-DD", "source_substring": "<exact verbatim quote>"}
-     If no date is specified in the message text, use the message sent_at date.
+     If no explicit end date is specified in the message text, use "2026-12-31" as final_date.
+   - EXCLUSION: Do NOT emit TERMINATE_SERIES for partial household employment notices ("One household employment record has ended. The remaining confirmed monthly salary is..." / "Salah satu sumber pendapatan kerja rumah tangga telah berakhir..."). Emit NOTHING (empty amendments list) for these notices.
 
 3. ADD_RECURRING_EXPENSE
    - Meaning: A new recurring expense begins.
@@ -99,13 +100,15 @@ You must emit ONLY from this closed set of 10 action types:
      - "next salary is reduced to X ... approved unpaid leave" / "cuti di luar tanggungan"
    - Format: {"action": "AMEND_RECURRING_AMOUNT", "series_key": "salary", "new_amount": <number>, "effective_date": "YYYY-MM-DD", "source_substring": "<exact verbatim quote>"}
 
-6. MARK_NON_RECURRING
-   - Trigger: "claim is closed / reimbursement, not regular salary" / "penggantian atas biaya kerja ... bukan gaji rutin".
-   - Target: Must match the related_event_id.
-   - Format: {"action": "MARK_NON_RECURRING", "event_id": "<related_event_id>", "source_substring": "<exact verbatim quote>"}
+6. MARK_NON_RECURRING & EXPENSE REIMBURSEMENTS
+   - Trigger: Work expense reimbursement ("reimbursement for your earlier work expense", "not your regular salary" / "penggantian atas biaya kerja", "bukan gaji rutin").
+   - MUST emit BOTH:
+     1) CONFIRM_EVENT for the related_event_id: {"action": "CONFIRM_EVENT", "event_id": "<related_event_id>", "source_substring": "<exact verbatim quote>"}
+     2) MARK_NON_RECURRING for the related_event_id: {"action": "MARK_NON_RECURRING", "event_id": "<related_event_id>", "source_substring": "<exact verbatim quote>"}
+   - PRIZE PROCEEDS RULE: For prize proceeds ("prize proceeds have reached your account after withholding... claim is now closed" / "FIN-xxxx"), emit ONLY CONFIRM_EVENT. Do NOT emit MARK_NON_RECURRING for prize proceeds.
 
 7. CONFIRM_EVENT
-   - Trigger: "settled in the cash account", "reached your account after withholding", "confirmed received on DATE".
+   - Trigger: "settled in the cash account", "reached your account after withholding", "prize proceeds have reached your account", "confirmed received on DATE".
    - Target: Must match the related_event_id.
    - Format: {"action": "CONFIRM_EVENT", "event_id": "<related_event_id>", "source_substring": "<exact verbatim quote>"}
 
