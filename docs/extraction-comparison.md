@@ -5,30 +5,61 @@ This document compares the deterministic baseline extractions (`src/data/message
 ## 1. High-Level Summary
 
 - **Total Messages in Dataset**: 215
-- **Messages Producing Amendments (Deterministic)**: 102 (Total amendments: 120)
-- **Messages Producing Amendments (Model)**: 111 (Total amendments: 130)
-- **Both Empty (No Amendments)**: 100
-- **Exact Matches (Identical Actions & Core Attributes)**: 72
-- **Disagreements / Divergences**: 43
-  - Emitted only by deterministic: 4
+- **Messages Producing Amendments (Deterministic)**: 109 (Total amendments: 127)
+- **Messages Producing Amendments (Model)**: 121 (Total amendments: 139)
+- **Both Empty (No Amendments)**: 93
+- **Exact Matches (Identical Actions & Core Attributes)**: 85
+- **Disagreements / Divergences**: 37
+  - Emitted only by deterministic: 1
   - Emitted only by model: 13
-  - Emitted by both but differing in action or parameters: 26
+  - Emitted by both but differing in action or parameters: 23
 
 ## 2. Action Breakdown and Agreements
 
 | Action Type | Deterministic Count | Model Count | Exact Agreements |
 |---|---|---|---|
-| `ADD_CONFIRMED_INCOME` | 15 | 16 | 15 |
+| `ADD_CONFIRMED_INCOME` | 15 | 15 | 15 |
 | `ADD_RECURRING_EXPENSE` | 8 | 8 | 8 |
-| `AMEND_RECURRING_AMOUNT` | 25 | 25 | 15 |
-| `CONFIRM_EVENT` | 14 | 11 | 7 |
-| `ESTABLISH_SERIES` | 35 | 37 | 35 |
-| `MARK_NON_RECURRING` | 3 | 7 | 0 |
-| `TERMINATE_SERIES` | 20 | 26 | 7 |
+| `AMEND_RECURRING_AMOUNT` | 32 | 37 | 22 |
+| `CONFIRM_EVENT` | 14 | 13 | 13 |
+| `ESTABLISH_SERIES` | 35 | 43 | 35 |
+| `MARK_NON_RECURRING` | 3 | 3 | 3 |
+| `TERMINATE_SERIES` | 20 | 20 | 7 |
 
 ## 3. Itemized Disagreements
 
 The following sections document every disagreement for architectural review. The outputs are not merged.
+
+### `message_08` (model_only)
+**Verbatim Message Text:**
+> Berikut informasi penggajian terbaru dari Greenfield Foods. Gaji pokok yang dikonfirmasi adalah IDR 38760000. Komisi dari transaksi yang masih berjalan belum disetujui. Transaksi yang masih berjalan tidak masuk pembayaran sampai komisinya dinyatakan diperoleh. Ref payroll EMP-0008.
+
+**Deterministic Output:**
+```json
+[]
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": 38760000,
+    "currency": "IDR",
+    "start_date": "2025-04-22",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 22,
+    "source_substring": "Gaji pokok yang dikonfirmasi adalah IDR 38760000",
+    "message_id": "message_08",
+    "user_id": "user_11",
+    "source_message_id": "message_08"
+  }
+]
+```
+
+---
 
 ### `message_09` (content_or_action_mismatch)
 **Verbatim Message Text:**
@@ -127,111 +158,6 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_110` (content_or_action_mismatch)
-**Verbatim Message Text:**
-> ClaimDesk has shared an update about your funds. The prize proceeds have reached your account after withholding. The claim is now closed and there are no further scheduled payments. There won’t be another payment unless a separate prize is confirmed. Account ref FIN-0110.
-
-**Deterministic Output:**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_13207",
-    "message_id": "message_110",
-    "user_id": "user_143"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_13207",
-    "source_substring": "The prize proceeds have reached your account after withholding.",
-    "message_id": "message_110",
-    "user_id": "user_143",
-    "source_message_id": "message_110"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_13207",
-    "source_substring": "The claim is now closed",
-    "message_id": "message_110",
-    "user_id": "user_143",
-    "source_message_id": "message_110"
-  }
-]
-```
-
----
-
-### `message_117` (content_or_action_mismatch)
-**Verbatim Message Text:**
-> Your payroll details at Greenfield Foods have changed. The latest employer credit is the reimbursement for your earlier work expense. The claim is now closed and no additional reimbursement is scheduled. This payment is linked to an earlier work expense, not your regular salary. Payroll ref EMP-0117.
-
-**Deterministic Output:**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_14026",
-    "message_id": "message_117",
-    "user_id": "user_152"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_14026",
-    "message_id": "message_117",
-    "user_id": "user_152",
-    "source_substring": "reimbursement for your earlier work expense"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_14026",
-    "source_substring": "This payment is linked to an earlier work expense, not your regular salary.",
-    "message_id": "message_117",
-    "user_id": "user_152",
-    "source_message_id": "message_117"
-  }
-]
-```
-
----
-
-### `message_119` (model_only)
-**Verbatim Message Text:**
-> Hi, Cedar Health payroll here. One household employment record has ended. The remaining confirmed monthly salary is EUR 1628. Any income that has ended should be removed from future estimates. Payroll ref EMP-0119.
-
-**Deterministic Output:**
-```json
-[]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "TERMINATE_SERIES",
-    "series_key": "salary",
-    "final_date": "2024-11-25",
-    "source_substring": "One household employment record has ended.",
-    "message_id": "message_119",
-    "user_id": "user_154",
-    "source_message_id": "message_119"
-  }
-]
-```
-
----
-
 ### `message_122` (model_only)
 **Verbatim Message Text:**
 > Ada pembaruan singkat dari tim payroll HarborWorks. Gaji bulanan sementara Anda adalah IDR 23940000. Jumlah yang lebih rendah masih berlaku untuk penggajian berikutnya. Inilah jumlah yang saat ini dijadwalkan untuk periode penggajian tersebut. Ref payroll EMP-0122.
@@ -253,6 +179,33 @@ The following sections document every disagreement for architectural review. The
     "message_id": "message_122",
     "user_id": "user_157",
     "source_message_id": "message_122"
+  }
+]
+```
+
+---
+
+### `message_127` (model_only)
+**Verbatim Message Text:**
+> Greenfield Foods telah memperbarui catatan penggajian Anda. Gaji rutin Anda untuk penggajian berikutnya adalah IDR 30400000. Penggajian yang sama mencakup penyesuaian tunggakan satu kali sebesar IDR 13680000. Slip gaji berikutnya akan menampilkan gaji rutin dan penyesuaian satu kali secara terpisah. Ref payroll EMP-0127.
+
+**Deterministic Output:**
+```json
+[]
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 30400000,
+    "effective_date": "2024-09-02",
+    "source_substring": "Gaji rutin Anda untuk penggajian berikutnya adalah IDR 30400000",
+    "message_id": "message_127",
+    "user_id": "user_163",
+    "source_message_id": "message_127"
   }
 ]
 ```
@@ -284,7 +237,7 @@ The following sections document every disagreement for architectural review. The
     "action": "TERMINATE_SERIES",
     "series_key": "salary",
     "final_date": "2026-04-03",
-    "source_substring": "Your employment has ended.",
+    "source_substring": "Your employment has ended. There are no regular salary payments scheduled after the final settlement.",
     "message_id": "message_129",
     "user_id": "user_165",
     "source_message_id": "message_129"
@@ -362,37 +315,10 @@ The following sections document every disagreement for architectural review. The
     "category": "salary",
     "description": "New employer payroll",
     "cadence_day": 15,
-    "source_substring": "Your salary of USD 1284 is confirmed for 2025-11-15.",
+    "source_substring": "Your salary of USD 1284 is confirmed for 2025-11-15",
     "message_id": "message_137",
     "user_id": "user_173",
     "source_message_id": "message_137"
-  }
-]
-```
-
----
-
-### `message_138` (model_only)
-**Verbatim Message Text:**
-> A note from Riverline Retail about your upcoming pay. Your temporary monthly pay is EUR 1924.56. The reduced amount continues for the next payroll. This is the amount currently scheduled for the affected pay cycle. Payroll ref EMP-0138.
-
-**Deterministic Output:**
-```json
-[]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "AMEND_RECURRING_AMOUNT",
-    "series_key": "salary",
-    "new_amount": 1924.56,
-    "effective_date": "2024-09-01",
-    "source_substring": "Your temporary monthly pay is EUR 1924.56. The reduced amount continues for the next payroll.",
-    "message_id": "message_138",
-    "user_id": "user_175",
-    "source_message_id": "message_138"
   }
 ]
 ```
@@ -427,49 +353,10 @@ The following sections document every disagreement for architectural review. The
     "series_key": "salary",
     "new_amount": 31889,
     "effective_date": "2025-12-29",
-    "source_substring": "Your next salary is reduced to ZAR 31889",
+    "source_substring": "Your next salary is reduced to ZAR 31889. The adjustment is due to approved unpaid leave.",
     "message_id": "message_148",
     "user_id": "user_186",
     "source_message_id": "message_148"
-  }
-]
-```
-
----
-
-### `message_150` (content_or_action_mismatch)
-**Verbatim Message Text:**
-> A quick update from the payroll team at Cedar Health. The latest employer credit is the reimbursement for your earlier work expense. The claim is now closed and no additional reimbursement is scheduled. This payment is linked to an earlier work expense, not your regular salary. Payroll ref EMP-0150.
-
-**Deterministic Output:**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_17401",
-    "message_id": "message_150",
-    "user_id": "user_188"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_17401",
-    "message_id": "message_150",
-    "user_id": "user_188",
-    "source_substring": "reimbursement for your earlier work expense"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_17401",
-    "source_substring": "This payment is linked to an earlier work expense, not your regular salary.",
-    "message_id": "message_150",
-    "user_id": "user_188",
-    "source_message_id": "message_150"
   }
 ]
 ```
@@ -546,48 +433,9 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_174` (content_or_action_mismatch)
+### `message_176` (model_only)
 **Verbatim Message Text:**
-> Ada informasi baru dari BrightPath Media tentang gaji Anda. Dana terbaru dari perusahaan adalah penggantian atas biaya kerja Anda sebelumnya. Klaim sudah ditutup dan tidak ada penggantian tambahan yang dijadwalkan. Pembayaran ini terkait biaya kerja sebelumnya, bukan gaji rutin Anda. Ref payroll EMP-0174.
-
-**Deterministic Output:**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_20615",
-    "message_id": "message_174",
-    "user_id": "user_224"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_20615",
-    "message_id": "message_174",
-    "user_id": "user_224",
-    "source_substring": "penggantian atas biaya kerja"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_20615",
-    "source_substring": "Pembayaran ini terkait biaya kerja sebelumnya, bukan gaji rutin Anda",
-    "message_id": "message_174",
-    "user_id": "user_224",
-    "source_message_id": "message_174"
-  }
-]
-```
-
----
-
-### `message_180` (model_only)
-**Verbatim Message Text:**
-> Northstar Labs has updated your payroll record. One household employment record has ended. The remaining confirmed monthly salary is EUR 2827. Any income that has ended should be removed from future estimates. Payroll ref EMP-0180.
+> Greenfield Foods has updated your payroll record. Your regular salary for the next payroll is INR 260000. The same payroll includes a one-time arrears adjustment of INR 117000. Your next payslip will show the regular pay and any one-off adjustment separately. Payroll ref EMP-0176.
 
 **Deterministic Output:**
 ```json
@@ -598,13 +446,14 @@ The following sections document every disagreement for architectural review. The
 ```json
 [
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2025-08-05",
-    "source_substring": "One household employment record has ended.",
-    "message_id": "message_180",
-    "user_id": "user_230",
-    "source_message_id": "message_180"
+    "new_amount": 260000,
+    "effective_date": "2024-11-25",
+    "source_substring": "Your regular salary for the next payroll is INR 260000",
+    "message_id": "message_176",
+    "user_id": "user_226",
+    "source_message_id": "message_176"
   }
 ]
 ```
@@ -636,36 +485,10 @@ The following sections document every disagreement for architectural review. The
     "action": "TERMINATE_SERIES",
     "series_key": "salary",
     "final_date": "2026-03-26",
-    "source_substring": "Kontrak musiman saat ini telah berakhir.",
+    "source_substring": "Kontrak musiman saat ini telah berakhir",
     "message_id": "message_186",
     "user_id": "user_237",
     "source_message_id": "message_186"
-  }
-]
-```
-
----
-
-### `message_187` (model_only)
-**Verbatim Message Text:**
-> Your payroll details at Northstar Labs have changed. One household employment record has ended. The remaining confirmed monthly salary is USD 912. Any income that has ended should be removed from future estimates. Payroll ref EMP-0187.
-
-**Deterministic Output:**
-```json
-[]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "TERMINATE_SERIES",
-    "series_key": "salary",
-    "final_date": "2024-11-26",
-    "source_substring": "One household employment record has ended.",
-    "message_id": "message_187",
-    "user_id": "user_238",
-    "source_message_id": "message_187"
   }
 ]
 ```
@@ -707,7 +530,7 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_191` (deterministic_only)
+### `message_191` (content_or_action_mismatch)
 **Verbatim Message Text:**
 > A quick update from the payroll team at Cedar Health. Your salary of USD 1680 is confirmed for 2025-11-15. The receiving bank will convert it using the rate applied on the settlement date. The amount received in your home currency will depend on the settlement-date conversion. Payroll ref EMP-0191.
 
@@ -727,7 +550,22 @@ The following sections document every disagreement for architectural review. The
 
 **Model Output (`claude-sonnet-5`):**
 ```json
-[]
+[
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": 1680,
+    "currency": "USD",
+    "start_date": "2025-11-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "source_substring": "Your salary of USD 1680 is confirmed for 2025-11-15.",
+    "message_id": "message_191",
+    "user_id": "user_245",
+    "source_message_id": "message_191"
+  }
+]
 ```
 
 ---
@@ -757,7 +595,7 @@ The following sections document every disagreement for architectural review. The
     "action": "TERMINATE_SERIES",
     "series_key": "salary",
     "final_date": "2026-03-24",
-    "source_substring": "Your employment has ended.",
+    "source_substring": "Your employment has ended. There are no regular salary payments scheduled after the final settlement.",
     "message_id": "message_192",
     "user_id": "user_246",
     "source_message_id": "message_192"
@@ -822,36 +660,10 @@ The following sections document every disagreement for architectural review. The
     "series_key": "salary",
     "new_amount": 702,
     "effective_date": "2025-12-27",
-    "source_substring": "Your next salary is reduced to USD 702",
+    "source_substring": "Your next salary is reduced to USD 702.",
     "message_id": "message_195",
     "user_id": "user_249",
     "source_message_id": "message_195"
-  }
-]
-```
-
----
-
-### `message_203` (model_only)
-**Verbatim Message Text:**
-> Tim payroll Cedar Health telah mengirim pembaruan. Salah satu sumber pendapatan kerja rumah tangga telah berakhir. Sisa gaji bulanan yang dikonfirmasi adalah IDR 48260000. Pendapatan yang sudah berakhir harus dikeluarkan dari perkiraan berikutnya. Ref payroll EMP-0203.
-
-**Deterministic Output:**
-```json
-[]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "TERMINATE_SERIES",
-    "series_key": "salary",
-    "final_date": "2024-11-23",
-    "source_substring": "Salah satu sumber pendapatan kerja rumah tangga telah berakhir",
-    "message_id": "message_203",
-    "user_id": "user_262",
-    "source_message_id": "message_203"
   }
 ]
 ```
@@ -886,7 +698,7 @@ The following sections document every disagreement for architectural review. The
     "start_date": "2025-05-15",
     "series_key": "salary",
     "category": "salary",
-    "description": "Riverline Retail payroll",
+    "description": "New employer payroll",
     "cadence_day": 15,
     "source_substring": "Your salary of EUR 1485 is confirmed for 2025-05-15.",
     "message_id": "message_204",
@@ -968,49 +780,9 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_28` (content_or_action_mismatch)
+### `message_27` (model_only)
 **Verbatim Message Text:**
-> Hi, Rewards Desk here. The prize proceeds have reached your account after withholding. The claim is now closed and there are no further scheduled payments. There won’t be another payment unless a separate prize is confirmed. Account ref FIN-0028.
-
-**Deterministic Output:**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_3491",
-    "message_id": "message_28",
-    "user_id": "user_38"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_3491",
-    "source_substring": "The prize proceeds have reached your account after withholding.",
-    "message_id": "message_28",
-    "user_id": "user_38",
-    "source_message_id": "message_28"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_3491",
-    "source_substring": "The claim is now closed and there are no further scheduled payments.",
-    "message_id": "message_28",
-    "user_id": "user_38",
-    "source_message_id": "message_28"
-  }
-]
-```
-
----
-
-### `message_30` (model_only)
-**Verbatim Message Text:**
-> A quick update from the payroll team at Greenfield Foods. One household employment record has ended. The remaining confirmed monthly salary is INR 148000. Any income that has ended should be removed from future estimates. Payroll ref EMP-0030.
+> Cedar Health telah memperbarui catatan penggajian Anda. Gaji rutin Anda untuk penggajian berikutnya adalah IDR 21090000. Penggajian yang sama mencakup penyesuaian tunggakan satu kali sebesar IDR 9490500. Slip gaji berikutnya akan menampilkan gaji rutin dan penyesuaian satu kali secara terpisah. Ref payroll EMP-0027.
 
 **Deterministic Output:**
 ```json
@@ -1021,13 +793,14 @@ The following sections document every disagreement for architectural review. The
 ```json
 [
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2025-12-31",
-    "source_substring": "One household employment record has ended.",
-    "message_id": "message_30",
-    "user_id": "user_42",
-    "source_message_id": "message_30"
+    "new_amount": 21090000,
+    "effective_date": "2024-03-01",
+    "source_substring": "Gaji rutin Anda untuk penggajian berikutnya adalah IDR 21090000",
+    "message_id": "message_27",
+    "user_id": "user_37",
+    "source_message_id": "message_27"
   }
 ]
 ```
@@ -1055,59 +828,6 @@ The following sections document every disagreement for architectural review. The
     "message_id": "message_36",
     "user_id": "user_49",
     "source_message_id": "message_36"
-  }
-]
-```
-
----
-
-### `message_37` (model_only)
-**Verbatim Message Text:**
-> Greenfield Foods has updated your payroll record. One household employment record has ended. The remaining confirmed monthly salary is INR 126000. Any income that has ended should be removed from future estimates. Payroll ref EMP-0037.
-
-**Deterministic Output:**
-```json
-[]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "TERMINATE_SERIES",
-    "series_key": "salary",
-    "final_date": "2025-08-05",
-    "source_substring": "One household employment record has ended.",
-    "message_id": "message_37",
-    "user_id": "user_50",
-    "source_message_id": "message_37"
-  }
-]
-```
-
----
-
-### `message_42` (model_only)
-**Verbatim Message Text:**
-> Rincian penggajian Anda di Cedar Health telah berubah. Salah satu sumber pendapatan kerja rumah tangga telah berakhir. Sisa gaji bulanan yang dikonfirmasi adalah IDR 25840000. Pendapatan yang sudah berakhir harus dikeluarkan dari perkiraan berikutnya. Ref payroll EMP-0042.
-
-**Deterministic Output:**
-```json
-[]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "AMEND_RECURRING_AMOUNT",
-    "series_key": "salary",
-    "new_amount": 25840000,
-    "effective_date": "2024-11-29",
-    "source_substring": "Sisa gaji bulanan yang dikonfirmasi adalah IDR 25840000",
-    "message_id": "message_42",
-    "user_id": "user_58",
-    "source_message_id": "message_42"
   }
 ]
 ```
@@ -1149,7 +869,7 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_53` (deterministic_only)
+### `message_53` (content_or_action_mismatch)
 **Verbatim Message Text:**
 > Greenfield Foods telah memperbarui catatan penggajian Anda. Gaji sebesar USD 696 dikonfirmasi untuk 2025-05-15. Bank penerima akan mengonversinya dengan kurs pada tanggal penyelesaian. Jumlah yang diterima dalam mata uang utama bergantung pada kurs tanggal penyelesaian. Ref payroll EMP-0053.
 
@@ -1169,7 +889,22 @@ The following sections document every disagreement for architectural review. The
 
 **Model Output (`claude-sonnet-5`):**
 ```json
-[]
+[
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": 696,
+    "currency": "USD",
+    "start_date": "2025-05-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "source_substring": "Gaji sebesar USD 696 dikonfirmasi untuk 2025-05-15",
+    "message_id": "message_53",
+    "user_id": "user_71",
+    "source_message_id": "message_53"
+  }
+]
 ```
 
 ---
@@ -1199,7 +934,7 @@ The following sections document every disagreement for architectural review. The
     "action": "TERMINATE_SERIES",
     "series_key": "salary",
     "final_date": "2026-04-04",
-    "source_substring": "Your employment has ended.",
+    "source_substring": "Your employment has ended. There are no regular salary payments scheduled after the final settlement.",
     "message_id": "message_57",
     "user_id": "user_75",
     "source_message_id": "message_57"
@@ -1209,7 +944,84 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_74` (deterministic_only)
+### `message_62` (model_only)
+**Verbatim Message Text:**
+> Hi, Cedar Health payroll here. Your regular salary for the next payroll is USD 1752. The same payroll includes a one-time arrears adjustment of USD 788.40. Your next payslip will show the regular pay and any one-off adjustment separately. Payroll ref EMP-0062.
+
+**Deterministic Output:**
+```json
+[]
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 1752,
+    "effective_date": "2024-11-26",
+    "source_substring": "Your regular salary for the next payroll is USD 1752",
+    "message_id": "message_62",
+    "user_id": "user_82",
+    "source_message_id": "message_62"
+  }
+]
+```
+
+---
+
+### `message_64` (deterministic_only)
+**Verbatim Message Text:**
+> BuyBox confirmed that the tote bag order was paid in INR on 3 April 2026. The receipt has the final amount. Order ref MER-0064.
+
+**Deterministic Output:**
+```json
+[
+  {
+    "action": "CONFIRM_EVENT",
+    "event_id": "event_7941",
+    "message_id": "message_64",
+    "user_id": "user_84"
+  }
+]
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[]
+```
+
+---
+
+### `message_65` (model_only)
+**Verbatim Message Text:**
+> Halo, ini tim payroll BrightPath Media. Gaji bulanan sementara Anda adalah IDR 8618400. Jumlah yang lebih rendah masih berlaku untuk penggajian berikutnya. Inilah jumlah yang saat ini dijadwalkan untuk periode penggajian tersebut. Ref payroll EMP-0065.
+
+**Deterministic Output:**
+```json
+[]
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 8618400,
+    "effective_date": "2024-02-27",
+    "source_substring": "Gaji bulanan sementara Anda adalah IDR 8618400",
+    "message_id": "message_65",
+    "user_id": "user_85",
+    "source_message_id": "message_65"
+  }
+]
+```
+
+---
+
+### `message_74` (content_or_action_mismatch)
 **Verbatim Message Text:**
 > Greenfield Foods payroll has posted a new update. Your salary of EUR 1804 is confirmed for 2025-08-15. The receiving bank will convert it using the rate applied on the settlement date. The amount received in your home currency will depend on the settlement-date conversion. Payroll ref EMP-0074.
 
@@ -1229,7 +1041,76 @@ The following sections document every disagreement for architectural review. The
 
 **Model Output (`claude-sonnet-5`):**
 ```json
+[
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": 1804,
+    "currency": "EUR",
+    "start_date": "2025-08-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "source_substring": "Your salary of EUR 1804 is confirmed for 2025-08-15.",
+    "message_id": "message_74",
+    "user_id": "user_98",
+    "source_message_id": "message_74"
+  }
+]
+```
+
+---
+
+### `message_77` (model_only)
+**Verbatim Message Text:**
+> Cobalt Systems has updated your payroll record. Your temporary monthly pay is INR 164880. The reduced amount continues for the next payroll. This is the amount currently scheduled for the affected pay cycle. Payroll ref EMP-0077.
+
+**Deterministic Output:**
+```json
 []
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 164880,
+    "effective_date": "2024-09-05",
+    "source_substring": "Your temporary monthly pay is INR 164880.",
+    "message_id": "message_77",
+    "user_id": "user_103",
+    "source_message_id": "message_77"
+  }
+]
+```
+
+---
+
+### `message_82` (model_only)
+**Verbatim Message Text:**
+> Your payroll details at Riverline Retail have changed. Your confirmed base salary is ZAR 33440. The commission shown for open deals is still pending approval. Open deals will stay out of the payout until the commission is marked as earned. Payroll ref EMP-0082.
+
+**Deterministic Output:**
+```json
+[]
+```
+
+**Model Output (`claude-sonnet-5`):**
+```json
+[
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 33440,
+    "effective_date": "2026-06-28",
+    "source_substring": "Your confirmed base salary is ZAR 33440.",
+    "message_id": "message_82",
+    "user_id": "user_108",
+    "source_message_id": "message_82"
+  }
+]
 ```
 
 ---
@@ -1259,7 +1140,7 @@ The following sections document every disagreement for architectural review. The
     "action": "TERMINATE_SERIES",
     "series_key": "salary",
     "final_date": "2026-04-01",
-    "source_substring": "Tidak ada pembayaran gaji rutin yang dijadwalkan setelah penyelesaian akhir.",
+    "source_substring": "Tidak ada pembayaran gaji rutin yang dijadwalkan setelah penyelesaian akhir",
     "message_id": "message_84",
     "user_id": "user_111",
     "source_message_id": "message_84"
@@ -1282,10 +1163,14 @@ The following sections document every disagreement for architectural review. The
 ```json
 [
   {
-    "action": "ADD_CONFIRMED_INCOME",
+    "action": "ESTABLISH_SERIES",
     "amount": 1296,
     "currency": "USD",
-    "date": "2026-09-15",
+    "start_date": "2026-09-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
     "source_substring": "Your employer has confirmed a USD 1296 salary credit for 15 September 2026.",
     "message_id": "message_86",
     "user_id": "user_113",
@@ -1324,7 +1209,7 @@ The following sections document every disagreement for architectural review. The
     "series_key": "salary",
     "new_amount": 148200,
     "effective_date": "2025-12-30",
-    "source_substring": "Your next salary is reduced to INR 148200. The adjustment is due to approved unpaid leave.",
+    "source_substring": "Your next salary is reduced to INR 148200",
     "message_id": "message_87",
     "user_id": "user_114",
     "source_message_id": "message_87"
@@ -1334,47 +1219,7 @@ The following sections document every disagreement for architectural review. The
 
 ---
 
-### `message_88` (content_or_action_mismatch)
-**Verbatim Message Text:**
-> There’s a new account update from RewardLane. The prize proceeds have reached your account after withholding. The claim is now closed and there are no further scheduled payments. There won’t be another payment unless a separate prize is confirmed. Account ref FIN-0088.
-
-**Deterministic Output:**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_10699",
-    "message_id": "message_88",
-    "user_id": "user_115"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_10699",
-    "source_substring": "The prize proceeds have reached your account after withholding.",
-    "message_id": "message_88",
-    "user_id": "user_115",
-    "source_message_id": "message_88"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_10699",
-    "source_substring": "The claim is now closed and there are no further scheduled payments.",
-    "message_id": "message_88",
-    "user_id": "user_115",
-    "source_message_id": "message_88"
-  }
-]
-```
-
----
-
-### `message_95` (deterministic_only)
+### `message_95` (content_or_action_mismatch)
 **Verbatim Message Text:**
 > A quick update from the payroll team at Greenfield Foods. Your salary of EUR 748 is confirmed for 2025-11-15. The receiving bank will convert it using the rate applied on the settlement date. The amount received in your home currency will depend on the settlement-date conversion. Payroll ref EMP-0095.
 
@@ -1394,45 +1239,20 @@ The following sections document every disagreement for architectural review. The
 
 **Model Output (`claude-sonnet-5`):**
 ```json
-[]
-```
-
----
-
-### `message_99` (content_or_action_mismatch)
-**Verbatim Message Text:**
-> A new notice is available for your WinPoint account. The prize proceeds have reached your account after withholding. The claim is now closed and there are no further scheduled payments. There won’t be another payment unless a separate prize is confirmed. Account ref FIN-0099.
-
-**Deterministic Output:**
-```json
 [
   {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_11925",
-    "message_id": "message_99",
-    "user_id": "user_129"
-  }
-]
-```
-
-**Model Output (`claude-sonnet-5`):**
-```json
-[
-  {
-    "action": "CONFIRM_EVENT",
-    "event_id": "event_11925",
-    "source_substring": "The prize proceeds have reached your account after withholding.",
-    "message_id": "message_99",
-    "user_id": "user_129",
-    "source_message_id": "message_99"
-  },
-  {
-    "action": "MARK_NON_RECURRING",
-    "event_id": "event_11925",
-    "source_substring": "The claim is now closed and there are no further scheduled payments.",
-    "message_id": "message_99",
-    "user_id": "user_129",
-    "source_message_id": "message_99"
+    "action": "ESTABLISH_SERIES",
+    "amount": 748,
+    "currency": "EUR",
+    "start_date": "2025-11-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "source_substring": "Your salary of EUR 748 is confirmed for 2025-11-15.",
+    "message_id": "message_95",
+    "user_id": "user_125",
+    "source_message_id": "message_95"
   }
 ]
 ```

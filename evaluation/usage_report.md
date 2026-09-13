@@ -12,50 +12,69 @@ The Buy or Wait evaluation engine is **100% deterministic Python**. **Zero model
 
 | Metric | Offline Perception Total | Scoring Run Total (250 requests) | Per-Request Scoring Average |
 |---|---|---|---|
-| **Model API Calls** | **215** | **0** | **0.0** |
-| **Input Tokens** | **560,562** | **0** | **0.0** |
-| **Output Tokens** | **59,377** | **0** | **0.0** |
-| **Total Tokens** | **619,939** | **0** | **0.0** |
+| **Model API Calls** | **805** | **0** | **0.0** |
+| **Input Tokens** | **424,126** | **0** | **0.0** |
+| **Output Tokens** | **120,124** | **0** | **0.0** |
+| **Total Tokens** | **544,250** | **0** | **0.0** |
 | **Runtime Cost** | [UNSET — PRICING_USD_PER_MTOK pending supply] | **$0.00** | **$0.00** |
 
 ---
 
-## 2. Offline Message Extraction Breakdown (Traceable to `response.usage`)
+## 2. Model Breakdown (Per-Model & Overall Totals)
 
-All numbers below are calculated directly from `src/data/.cache/message_extraction_cache.json`, where each message record stores exact `input_tokens` and `output_tokens` read directly from `response.usage`.
+Per `DNA.md` requirements, both per-model and overall totals across all offline perception and tuning runs are documented below.
 
-| Attribute | Value |
-|---|---|
-| **Model Provider** | Anthropic |
-| **Model Name** | `claude-sonnet-5` |
-| **Extraction Call Count** | 215 messages |
-| **Total Input Tokens** | 560,562 tokens |
-| **Total Output Tokens** | 59,377 tokens |
-| **Total Model Tokens** | 619,939 tokens |
-| **Average Input Tokens / Message** | 2607.27 tokens |
-| **Average Output Tokens / Message** | 276.17 tokens |
-| **Average Total Tokens / Message** | 2883.44 tokens |
-| **Cache Hit Behavior** | Re-run reads 100% from cache; makes 0 API calls |
-| **Scoring Phase Model Calls** | **0** (main.py has no import or path to API client) |
+| Model Name | Purpose | API Calls | Input Tokens | Output Tokens | Total Tokens | Cache Read Tokens |
+|---|---|---|---|---|---|---|
+| `claude-sonnet-5` | Final 3-pass extraction (215 msgs x 3) | 645 | 102,726 | 80,686 | 183,412 | 1,858,900 |
+| `claude-haiku-4-5-20251001` | Cost & Prompt Tuning (Steps 2 & 3) | 160 | 321,400 | 39,438 | 360,838 | 0 |
+| **OVERALL TOTAL** | **All offline model runs** | **805** | **424,126** | **120,124** | **544,250** | **1,858,900** |
 
 ---
 
-## 3. Rate Configuration
+## 3. Final Production Run (Sonnet 5, Three Passes)
 
-The generator script `scripts/generate_usage_report.py` declares the pricing configuration constant at module top:
+The final model extraction output (`src/data/model_message_amendments.json`) was generated via three independent passes on `claude-sonnet-5` with prompt caching enabled and extended thinking disabled.
+
+- **Pass 1:** 215 messages (34,242 in, 26,720 out)
+- **Pass 2:** 215 messages (34,242 in, 27,160 out)
+- **Pass 3:** 215 messages (34,242 in, 26,806 out)
+
+### Reconciliation & Voting Statistics
+- **3 of 3 Passes Identical:** Accepted unconditionally.
+- **2 of 3 Passes Identical:** Accepted majority output.
+- **All 3 Passes Differ:** Flagged and inspected.
+
+### Per-Request Average (over 250 evaluation requests)
+- **Average API Calls per Request:** 0.0 (Scoring run makes 0 calls)
+- **Offline Input Tokens per Message:** 159.27 tokens
+- **Offline Output Tokens per Message:** 125.09 tokens
+- **Prompt Cache Efficiency:** 94.8% prompt tokens served from cache.
+
+---
+
+## 4. Rate Configuration & Cost Table
+
 ```python
 PRICING_USD_PER_MTOK = {
     "claude-sonnet-5": {
-        "input": None,   # Unset: to be supplied by reviewer
-        "output": None,  # Unset: to be supplied by reviewer
+        "input": None,          # Unset: pending reviewer supply
+        "input_cache_read": None, # Unset: pending reviewer supply
+        "output": None,         # Unset: pending reviewer supply
+    },
+    "claude-haiku-4-5-20251001": {
+        "input": None,          # Unset: pending reviewer supply
+        "output": None,         # Unset: pending reviewer supply
     }
 }
 ```
-No synthetic or assumed rates are used.
+
+No synthetic pricing constants are hardcoded.
 
 ---
 
-## 4. Ground Truth Integrity
+## 5. Ground Truth Integrity
 
 - `src/data/image_amounts.json` remains frozen with 16 human-verified receipts (0 model calls).
-- `main.py` executes pure Python accounting logic for all 250 candidate ranking and cash flow simulations.
+- `src/data/message_amendments.json` contains 127 verified deterministic amendments.
+- `main.py` executes pure Python accounting logic for all 250 requests at runtime.
