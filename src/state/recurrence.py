@@ -715,7 +715,7 @@ def compute_user_trough_comparison(
 
     flows_with_burn = list(flows_no_burn)
     if daily_burn > Decimal("0"):
-        for day_offset in range(horizon_days + 1):
+        for day_offset in range(horizon_days):
             dt = request_date + timedelta(days=day_offset)
             flows_with_burn.append(
                 Flow(date=dt, amount=daily_burn, direction=Direction.DEBIT, source_event_id="burn", is_projected=True)

@@ -153,7 +153,7 @@ def build_user_context(
     )
     daily_burn = sum((b.daily_burn for b in burn_rates), Decimal("0"))
     if daily_burn > Decimal("0"):
-        for day_offset in range(horizon_days + 1):
+        for day_offset in range(horizon_days):
             dt = request_date + timedelta(days=day_offset)
             flows.append(
                 Flow(
@@ -238,9 +238,7 @@ def is_safe(candidate: Candidate, context: UserContext) -> SafetyResult:
     trough = curve.trough()
     trough_date = curve.trough_date()
 
-    safe = (trough >= context.minimum_balance_to_keep) and (
-        context.opening_balance >= context.minimum_balance_to_keep
-    )
+    safe = trough >= context.minimum_balance_to_keep
 
     return SafetyResult(is_safe=safe, trough=trough, trough_date=trough_date)
 

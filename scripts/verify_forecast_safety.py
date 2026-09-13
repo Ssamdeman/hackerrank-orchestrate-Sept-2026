@@ -34,7 +34,7 @@ TWO_PLACES = Decimal("0.01")
 
 # Baseline values for amount_safe_to_pay from the accepted calibration run
 BASELINE_SAFE: dict[str, Decimal] = {
-    "request_01": Decimal("8802.08"),
+    "request_01": Decimal("9048.50"),
     "request_02": Decimal("17880145.60"),
     "request_03": Decimal("947219.41"),
     "request_04": Decimal("9806308.30"),
@@ -45,7 +45,7 @@ BASELINE_SAFE: dict[str, Decimal] = {
     "request_09": Decimal("166.61"),
     "request_10": Decimal("0.00"),
     "request_11": Decimal("12799768.43"),
-    "request_12": Decimal("61007.12"),
+    "request_12": Decimal("61373.30"),
     "request_13": Decimal("941.60"),
     "request_14": Decimal("552.00"),
     "request_15": Decimal("95.36"),

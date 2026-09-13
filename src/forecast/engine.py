@@ -68,7 +68,7 @@ def project(
                 daily_delta[f.date] -= f.amount
 
     running = opening_balance
-    trough = opening_balance
+    trough: Decimal | None = None
     trough_date = start
     daily_balances: dict[date, Decimal] = {}
 
@@ -76,10 +76,11 @@ def project(
         dt = start + timedelta(days=day_offset)
         running += daily_delta.get(dt, Decimal("0"))
         daily_balances[dt] = running
-        if running < trough:
+        if trough is None or running < trough:
             trough = running
             trough_date = dt
 
+    assert trough is not None
     return BalanceCurve(
         opening_balance=opening_balance,
         start=start,
