@@ -67,7 +67,7 @@ def render_decision_explanation(
     request: Request,
     events: dict[str, FinancialEvent] | Sequence[FinancialEvent],
     safe_amount: Decimal | None = None,
-    use_t7_for_not_recommended: bool = False,
+    use_t7_for_not_recommended: bool | None = None,
 ) -> str:
     """Render deterministic decision explanation for chosen candidate (§11.2).
 
@@ -77,8 +77,8 @@ def render_decision_explanation(
       T3: installments / affordable_with_plan
       T4: wait / affordable_later
       T5: partial_payment / affordable_with_plan
-      T6: not_recommended / not_affordable (default)
-      T7: not_recommended / not_affordable (alternate, when requested)
+      T6: not_recommended / not_affordable (ratio < 0.10 per ASSUMED-16)
+      T7: not_recommended / not_affordable (ratio >= 0.10 per ASSUMED-16)
     """
     events_by_id: dict[str, FinancialEvent]
     if isinstance(events, dict):
@@ -130,10 +130,16 @@ def render_decision_explanation(
             f"This completes the full request and keeps the {min_str} minimum protected."
         )
 
-    # T6 & T7: NOT_RECOMMENDED
+    # T6 & T7: NOT_RECOMMENDED (ratio >= 0.10 selects T7, else T6 per ASSUMED-16)
     if candidate.method == PaymentMethod.NOT_RECOMMENDED:
-        if use_t7_for_not_recommended:
-            safe = safe_amount if safe_amount is not None else Decimal("0.00")
+        safe = safe_amount if safe_amount is not None else Decimal("0.00")
+        if use_t7_for_not_recommended is not None:
+            is_t7 = use_t7_for_not_recommended
+        else:
+            ratio = (safe / context.requested_amount) if context.requested_amount > Decimal("0") else Decimal("0")
+            is_t7 = ratio >= Decimal("0.10")
+
+        if is_t7:
             safe_str = format_explanation_amount(safe, context.home_currency)
             return (
                 f"Do not proceed with the {amt_str} request. "

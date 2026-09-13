@@ -248,7 +248,7 @@ Reconciled exactly against the 25 calibration rows (3 + 9 + 6 + 7 = 25; 6 `full_
 
 ### 6.3 When `earliest_date_for_full_payment` is empty
 
-Empty **if and only if** `affordability_status == 'not_affordable'`. Exact in the sample: 7 empty, 7 `not_affordable`. `[DERIVED]` + `[SPEC]`
+`earliest_date_for_full_payment` is empty when full payment never becomes safe without spending changes inside the 90-day window. `not_affordable` always implies empty. `affordable_with_plan` MAY be empty when the plan depends on spending changes. `[REVISED — 6 evaluation rows; the calibration set contains no such case]`
 
 This field measures **financial capacity, independent of the user's method preferences**. It may equal `request_date` even when the recommendation is `installments`, because the user declined to consider full payment. It is computed **without** optional spending changes. `[SPEC]`
 
@@ -533,8 +533,8 @@ Every assertion must pass before `output.csv` is written. A failure is a **build
 **Date integrity**
 
 15. `affordable_now` ⟹ `earliest_date_for_full_payment == request_date`
-16. `not_affordable` ⟺ `earliest_date_for_full_payment` empty
-17. All other statuses ⟹ populated and within the 90-day window
+16. `not_affordable` ⟹ `earliest_date_for_full_payment` empty
+17. All other statuses ⟹ populated and within the 90-day window, unless the plan depends on spending changes
 
 **Spending changes**
 
@@ -552,7 +552,7 @@ Every assertion must pass before `output.csv` is written. A failure is a **build
 
 **Preference honouring**
 
-26. The emitted method is in `payment_methods_user_will_consider`, or is `not_recommended`
+26. The emitted method is in `payment_methods_user_will_consider` (where `wait` is gated on `full_payment` per §6.1, not on a literal "wait" token), or is `not_recommended`
 27. `partial_payment` ⟹ `allows_partial_payment == true`
 28. `installments` ⟹ `number_of_payments <= max_installment_months`
 
@@ -590,6 +590,7 @@ Assumption | Impact | Resolution
 12 | event_1700 = 2870.00 | Low — 16 INR, one user | Unresolvable; source cropped. Safer-interpretation rule applied
 13 | event_3231 = 8528.00 | Low — 0.10 INR | Unresolvable; both figures printed. Charged amount wins
 14 | Minimum 3 occurrences to declare a series | Medium | Sweep 2 vs 3 vs 4 against calibration
+16 | T7 threshold of 10% | Low — explanation tone | Fitted to 7 calibration rows, adopted because decision_explanation is scored on usefulness rather than exact match and no other discriminator exists
 
 ### Pending verifications
 

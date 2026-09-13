@@ -51,6 +51,7 @@ from verify.safety import (
     compute_amount_safe_to_pay,
     earliest_date_for_full_payment,
 )
+from verify.validator import ValidationError, validate_output_rows
 
 logger = get_logger("main")
 
@@ -200,6 +201,24 @@ def run_pipeline(
             set_request_id(req.request_id)
             logger.error(f"Failed on {req.request_id}: {exc}")
             failures.append((req.request_id, str(exc), stage))
+
+    # Stage 9: Validate (Architecture §4.11)
+    set_stage("validation")
+    set_request_id("global")
+    logger.info("Running pre-submission validator assertions across all rows")
+    try:
+        validate_output_rows(
+            output_rows=rows,
+            requests=requests,
+            profiles=profiles,
+            events=events,
+            options_by_request=options_by_req,
+        )
+        logger.info("All 28 validator assertions passed successfully")
+    except ValidationError as val_err:
+        logger.error("Build stop - validator assertion failed: %s", val_err)
+        print(f"\n[BUILD STOP] Validator Assertion Failure: {val_err}", file=sys.stderr)
+        raise
 
     set_stage("writer")
     set_request_id("global")
