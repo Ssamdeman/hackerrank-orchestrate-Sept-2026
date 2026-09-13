@@ -1096,5 +1096,68 @@
     "message_id": "message_174",
     "user_id": "user_224",
     "source_substring": "penggantian atas biaya kerja"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 148000,
+    "effective_date": "2025-12-31",
+    "message_id": "message_30",
+    "user_id": "user_42",
+    "source_substring": "The remaining confirmed monthly salary is INR 148000"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 126000,
+    "effective_date": "2025-08-05",
+    "message_id": "message_37",
+    "user_id": "user_50",
+    "source_substring": "The remaining confirmed monthly salary is INR 126000"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 25840000,
+    "effective_date": "2024-11-29",
+    "message_id": "message_42",
+    "user_id": "user_58",
+    "source_substring": "Sisa gaji bulanan yang dikonfirmasi adalah IDR 25840000"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 1628,
+    "effective_date": "2024-11-25",
+    "message_id": "message_119",
+    "user_id": "user_154",
+    "source_substring": "The remaining confirmed monthly salary is EUR 1628"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 2827,
+    "effective_date": "2025-08-05",
+    "message_id": "message_180",
+    "user_id": "user_230",
+    "source_substring": "The remaining confirmed monthly salary is EUR 2827"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 912,
+    "effective_date": "2024-11-26",
+    "message_id": "message_187",
+    "user_id": "user_238",
+    "source_substring": "The remaining confirmed monthly salary is USD 912"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": 48260000,
+    "effective_date": "2024-11-23",
+    "message_id": "message_203",
+    "user_id": "user_262",
+    "source_substring": "Sisa gaji bulanan yang dikonfirmasi adalah IDR 48260000"
   }
 ]

@@ -77,8 +77,8 @@ You must emit ONLY from this closed set of 10 action types:
    - Case A: "first salary from the NEW employer" -> TERMINATE_SERIES (final_date is the start date of the new employer)
    - Case B: "seasonal contract has ended" / "employment has ended" / "kontrak musiman telah berakhir" / "no regular salary payments scheduled after..."
      Format: {"action": "TERMINATE_SERIES", "series_key": "salary", "final_date": "YYYY-MM-DD", "source_substring": "<exact verbatim quote>"}
-     If no explicit end date is specified in the message text, use "2026-12-31" as final_date.
-   - EXCLUSION: Do NOT emit TERMINATE_SERIES for partial household employment notices ("One household employment record has ended. The remaining confirmed monthly salary is..." / "Salah satu sumber pendapatan kerja rumah tangga telah berakhir..."). Emit NOTHING (empty amendments list) for these notices.
+     If no date is specified in the message text, use the message sent_at date.
+   - EXCLUSION: Do NOT emit TERMINATE_SERIES for partial household employment updates ("One household employment record has ended. The remaining confirmed monthly salary is X"). Those represent salary adjustments, NOT full terminations — use AMEND_RECURRING_AMOUNT (see item 5).
 
 3. ADD_RECURRING_EXPENSE
    - Meaning: A new recurring expense begins.
@@ -98,7 +98,9 @@ You must emit ONLY from this closed set of 10 action types:
    - Triggers:
      - "salary increased to X from DATE" / "gaji bulanan anda naik menjadi X..."
      - "next salary is reduced to X ... approved unpaid leave" / "cuti di luar tanggungan"
-   - Format: {"action": "AMEND_RECURRING_AMOUNT", "series_key": "salary", "new_amount": <number>, "effective_date": "YYYY-MM-DD", "source_substring": "<exact verbatim quote>"}
+     - "One household employment record has ended. The remaining confirmed monthly salary is X." / "Salah satu sumber pendapatan kerja rumah tangga telah berakhir. Sisa gaji bulanan yang dikonfirmasi adalah X."
+       Format: {"action": "AMEND_RECURRING_AMOUNT", "series_key": "salary", "new_amount": <number>, "effective_date": "YYYY-MM-DD", "source_substring": "<exact verbatim quote>"}
+       (Use the message sent_at date as effective_date).
 
 6. MARK_NON_RECURRING & EXPENSE REIMBURSEMENTS
    - Trigger: Work expense reimbursement ("reimbursement for your earlier work expense", "not your regular salary" / "penggantian atas biaya kerja", "bukan gaji rutin").
@@ -330,6 +332,26 @@ def _semantic_extract(
         amendments.append({
             "action": "AMEND_RECURRING_AMOUNT",
             "series_key": f"{user_id}_Payroll credit_{curr}",
+            "new_amount": float(amt_str),
+            "effective_date": eff_dt,
+            "message_id": message_id,
+            "user_id": user_id,
+            "source_substring": message_text.strip(),
+        })
+        return amendments, fx_flag, False
+
+    # 4c. "One household employment record has ended. The remaining confirmed monthly salary is {AMOUNT}." (AMEND_RECURRING_AMOUNT)
+    household_salary_triggers = [
+        "one household employment record has ended",
+        "salah satu sumber pendapatan kerja rumah tangga telah berakhir",
+    ]
+    if any(k in lower_text for k in household_salary_triggers) and currs:
+        curr, amt_str = currs[0]
+        msg_dt_match = re.search(r"(\d{4}-\d{2}-\d{2})", sent_at)
+        eff_dt = msg_dt_match.group(1) if msg_dt_match else (dates[0] if dates else "2025-01-01")
+        amendments.append({
+            "action": "AMEND_RECURRING_AMOUNT",
+            "series_key": "salary",
             "new_amount": float(amt_str),
             "effective_date": eff_dt,
             "message_id": message_id,

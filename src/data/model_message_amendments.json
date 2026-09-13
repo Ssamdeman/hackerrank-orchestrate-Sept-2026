@@ -159,10 +159,11 @@
     "source_message_id": "message_29"
   },
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2025-12-31",
-    "source_substring": "One household employment record has ended.",
+    "new_amount": 148000,
+    "effective_date": "2025-12-31",
+    "source_substring": "The remaining confirmed monthly salary is INR 148000",
     "message_id": "message_30",
     "user_id": "user_42",
     "source_message_id": "message_30"
@@ -233,10 +234,11 @@
     "source_message_id": "message_36"
   },
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2025-08-05",
-    "source_substring": "One household employment record has ended.",
+    "new_amount": 126000,
+    "effective_date": "2025-08-05",
+    "source_substring": "The remaining confirmed monthly salary is INR 126000",
     "message_id": "message_37",
     "user_id": "user_50",
     "source_message_id": "message_37"
@@ -838,10 +840,11 @@
     "source_message_id": "message_117"
   },
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2024-11-25",
-    "source_substring": "One household employment record has ended.",
+    "new_amount": 1628,
+    "effective_date": "2024-11-25",
+    "source_substring": "The remaining confirmed monthly salary is EUR 1628",
     "message_id": "message_119",
     "user_id": "user_154",
     "source_message_id": "message_119"
@@ -1190,10 +1193,11 @@
     "source_message_id": "message_178"
   },
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2025-08-05",
-    "source_substring": "One household employment record has ended.",
+    "new_amount": 2827,
+    "effective_date": "2025-08-05",
+    "source_substring": "The remaining confirmed monthly salary is EUR 2827",
     "message_id": "message_180",
     "user_id": "user_230",
     "source_message_id": "message_180"
@@ -1236,10 +1240,11 @@
     "source_message_id": "message_186"
   },
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2024-11-26",
-    "source_substring": "One household employment record has ended.",
+    "new_amount": 912,
+    "effective_date": "2024-11-26",
+    "source_substring": "The remaining confirmed monthly salary is USD 912",
     "message_id": "message_187",
     "user_id": "user_238",
     "source_message_id": "message_187"
@@ -1348,10 +1353,11 @@
     "source_message_id": "message_200"
   },
   {
-    "action": "TERMINATE_SERIES",
+    "action": "AMEND_RECURRING_AMOUNT",
     "series_key": "salary",
-    "final_date": "2024-11-23",
-    "source_substring": "Salah satu sumber pendapatan kerja rumah tangga telah berakhir",
+    "new_amount": 48260000,
+    "effective_date": "2024-11-23",
+    "source_substring": "Sisa gaji bulanan yang dikonfirmasi adalah IDR 48260000",
     "message_id": "message_203",
     "user_id": "user_262",
     "source_message_id": "message_203"

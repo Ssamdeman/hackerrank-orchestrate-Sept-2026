@@ -452,13 +452,25 @@ def resolve_user_recurrence(
                 assert td.lower() not in a.series_key.lower(), (
                     f"User {user_id} has both TERMINATE_SERIES and AMEND_RECURRING_AMOUNT on series {td}"
                 )
-            for idx, s in enumerate(detected):
-                s_key_str = f"{s.key.user_id}_{s.key.description}_{s.key.currency}"
-                if a.series_key in (s_key_str, s.key.description) or (
-                    s.key.category == "salary" and "payroll" in s.key.description.lower()
-                ):
-                    detected[idx] = replace(s, latest_amount=a.new_amount)
-                    break
+            # Household salary handling: remove ended second income, update primary
+            has_hh = any(
+                s.key.category == "salary" and "household" in s.key.description.lower()
+                for s in detected
+            )
+            if has_hh and a.series_key in ("salary", "Primary household salary"):
+                detected = [s for s in detected if s.key.description != "Second household income"]
+                for idx, s in enumerate(detected):
+                    if s.key.description == "Primary household salary":
+                        detected[idx] = replace(s, latest_amount=a.new_amount)
+                        break
+            else:
+                for idx, s in enumerate(detected):
+                    s_key_str = f"{s.key.user_id}_{s.key.description}_{s.key.currency}"
+                    if a.series_key in (s_key_str, s.key.description) or (
+                        s.key.category == "salary" and "payroll" in s.key.description.lower()
+                    ):
+                        detected[idx] = replace(s, latest_amount=a.new_amount)
+                        break
 
     # 4. ADD_RECURRING_EXPENSE
     for a in user_amends:

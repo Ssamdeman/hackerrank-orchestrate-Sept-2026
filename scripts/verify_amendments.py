@@ -64,7 +64,7 @@ def audit_amendments(
 
         EXPECTED_ACTION_COUNTS: dict[str, int] = {
             "CONFIRM_EVENT": 14,
-            "AMEND_RECURRING_AMOUNT": 25,
+            "AMEND_RECURRING_AMOUNT": 32,
             "ESTABLISH_SERIES": 35,
             "ADD_RECURRING_EXPENSE": 8,
             "ADD_CONFIRMED_INCOME": 15,
@@ -76,8 +76,8 @@ def audit_amendments(
             assert act_cnt == exp_cnt, (
                 f"HARD RULE VIOLATION: action '{act}' count mismatch: got {act_cnt}, expected {exp_cnt}"
             )
-        assert sum(action_counts.values()) == 120, (
-            f"HARD RULE VIOLATION: total amendments count mismatch: got {sum(action_counts.values())}, expected 120"
+        assert sum(action_counts.values()) == 127, (
+            f"HARD RULE VIOLATION: total amendments count mismatch: got {sum(action_counts.values())}, expected 127"
         )
 
         # -------------------------------------------------------------
