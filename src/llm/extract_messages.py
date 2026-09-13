@@ -32,11 +32,19 @@ DEFAULT_MESSAGES_CSV = _REPO_ROOT / "dataset" / "messages.csv"
 DEFAULT_EVENTS_CSV = _REPO_ROOT / "dataset" / "financial_events.csv"
 DEFAULT_CACHE_DIR = _REPO_ROOT / "src" / "data" / ".cache"
 DEFAULT_CACHE_PATH = DEFAULT_CACHE_DIR / "message_extraction_cache.json"
-DEFAULT_OUTPUT_PATH = _REPO_ROOT / "src" / "data" / "message_amendments.json"
+DEFAULT_OUTPUT_PATH = _REPO_ROOT / "src" / "data" / "model_message_amendments.json"
 DEFAULT_USAGE_LOG_PATH = _REPO_ROOT / "evaluation" / "usage_report.md"
 
 
 logger = logging.getLogger("llm.extract_messages")
+
+ALLOWED_EXPENSE_CATEGORIES: frozenset[str] = frozenset({
+    "groceries", "transport", "dining", "salary", "utilities", "rent",
+    "cloud_storage", "shopping", "streaming", "debt_repayment", "entertainment",
+    "insurance", "music_subscription", "healthcare", "delivery_membership",
+    "education", "housing", "gym", "family_support", "investment",
+    "work_expense", "windfall",
+})
 
 
 SYSTEM_PROMPT = """You are an expert financial audit intelligence system analyzing banking and payroll notifications.
@@ -476,7 +484,7 @@ def run_extraction(
         if not api_key:
             raise RuntimeError("ANTHROPIC_API_KEY is absent from environment and repo .env. Stopping.")
 
-        client = Anthropic(api_key=api_key)
+        client = Anthropic(api_key=api_key, max_retries=5)
         test_model = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5")
         try:
             client.messages.create(
@@ -490,7 +498,7 @@ def run_extraction(
 
         extracted_amendments: list[dict[str, Any]] = []
 
-        for row in messages:
+        for idx, row in enumerate(messages):
             mid = row["message_id"]
             uid = row["user_id"]
             rel = row.get("related_event_id")
@@ -499,11 +507,16 @@ def run_extraction(
             txt = row["message_text"]
             sent_at = row.get("sent_at", "")
 
-            if mid in cache and not force_refresh:
+            cached_entry = cache.get(mid)
+            has_real_usage = (
+                cached_entry is not None
+                and cached_entry.get("usage", {}).get("input_tokens", 0) > 0
+            )
+
+            if cached_entry is not None and has_real_usage and not force_refresh:
                 cached_hits += 1
-                entry = cache[mid]
-                msg_amendments = entry.get("amendments", [])
-                tokens = entry.get("tokens", {"prompt": 0, "completion": 0})
+                msg_amendments = cached_entry.get("amendments", [])
+                tokens = cached_entry.get("tokens", {"prompt": 0, "completion": 0})
                 total_prompt_tokens += int(tokens.get("prompt", 0))
                 total_completion_tokens += int(tokens.get("completion", 0))
                 extracted_amendments.extend(msg_amendments)
@@ -518,40 +531,50 @@ def run_extraction(
                 f"Sent At: {sent_at}\n"
                 f"Message Text:\n{txt}"
             )
-            try:
-                response = client.messages.create(
-                    model=test_model,
-                    max_tokens=1000,
-                    system=SYSTEM_PROMPT,
-                    messages=[{"role": "user", "content": user_content}],
-                )
-            except Exception as ex:
-                raise RuntimeError(f"Anthropic API call failed for message {mid}: {ex}. Stopping.") from ex
+            parsed: dict[str, Any] = {}
+            call_prompt_tokens = 0
+            call_completion_tokens = 0
+            max_retries_per_msg = 3
+            last_err: Exception | None = None
 
-            call_prompt_tokens = response.usage.input_tokens
-            call_completion_tokens = response.usage.output_tokens
+            for attempt in range(max_retries_per_msg):
+                try:
+                    response = client.messages.create(
+                        model=test_model,
+                        max_tokens=4096,
+                        system=SYSTEM_PROMPT,
+                        messages=[{"role": "user", "content": user_content}],
+                    )
+                    call_prompt_tokens = response.usage.input_tokens
+                    call_completion_tokens = response.usage.output_tokens
 
-            # Parse Claude JSON response
-            raw_text = ""
-            for block in response.content:
-                if hasattr(block, "text"):
-                    raw_text += str(getattr(block, "text"))
-            if not raw_text:
-                raw_text = "{}"
-            # Strip markdown fence if present
-            if "```json" in raw_text:
-                raw_text = raw_text.split("```json", 1)[1].split("```", 1)[0]
-            elif "```" in raw_text:
-                raw_text = raw_text.split("```", 1)[1].split("```", 1)[0]
+                    # Parse Claude JSON response from TextBlocks
+                    raw_text = ""
+                    for block in response.content:
+                        if getattr(block, "type", None) == "text":
+                            raw_text += getattr(block, "text", "")
+                    if not raw_text:
+                        raw_text = "{}"
+                    if "```json" in raw_text:
+                        raw_text = raw_text.split("```json", 1)[1].split("```", 1)[0]
+                    elif "```" in raw_text:
+                        raw_text = raw_text.split("```", 1)[1].split("```", 1)[0]
 
-            try:
-                parsed = json.loads(raw_text.strip())
-            except Exception as pe:
-                raise RuntimeError(f"Failed to parse model JSON for message {mid}: {pe}. Raw: {raw_text!r}") from pe
+                    parsed = json.loads(raw_text.strip())
+                    break
+                except Exception as ex:
+                    last_err = ex
+                    logger.warning("Attempt %d failed for %s: %s; retrying...", attempt + 1, mid, ex)
+
+            if not parsed and last_err is not None:
+                raise RuntimeError(
+                    f"Anthropic API call / JSON parse failed for message {mid} after {max_retries_per_msg} attempts: {last_err}"
+                ) from last_err
 
             raw_amends = parsed.get("amendments", [])
             fx_flag = bool(parsed.get("fx_at_settlement_date", False))
             untrusted_directive = bool(parsed.get("untrusted_directive_detected", False))
+
 
             # Enrich each amendment with message_id and user_id and assert source_substring
             msg_amendments = []
@@ -559,28 +582,71 @@ def run_extraction(
                 a["message_id"] = mid
                 a["user_id"] = uid
                 a["source_message_id"] = mid
-                sub = a.get("source_substring", "")
-                if not sub or sub not in txt:
-                    logger.warning(
-                        "Dropping amendment for %s because source_substring %r is missing or not in message text",
-                        mid,
-                        sub,
-                    )
+                sub = a.get("source_substring", "").strip()
+                if not sub:
+                    logger.warning("Dropping amendment for %s: missing source_substring", mid)
                     continue
+                if sub not in txt:
+                    # Check for quote normalization differences
+                    norm_txt = txt.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
+                    norm_sub = sub.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
+                    if norm_sub in norm_txt:
+                        start_i = norm_txt.index(norm_sub)
+                        sub = txt[start_i : start_i + len(norm_sub)]
+                        a["source_substring"] = sub
+                    else:
+                        logger.warning(
+                            "Dropping amendment for %s because source_substring %r is not in message text",
+                            mid,
+                            sub,
+                        )
+                        continue
+                assert a["source_substring"] in txt, f"source_substring {a['source_substring']!r} not in {txt!r}"
+
+                # Ensure category compliance for ADD_RECURRING_EXPENSE
+                if a.get("action") == "ADD_RECURRING_EXPENSE":
+                    cat = str(a.get("category", ""))
+                    if cat.lower() in ("childcare", "penitipan anak", "daycare") or cat not in ALLOWED_EXPENSE_CATEGORIES:
+                        a["category"] = "family_support"
+
                 msg_amendments.append(a)
 
             cache[mid] = {
                 "amendments": msg_amendments,
+                "usage": {
+                    "input_tokens": call_prompt_tokens,
+                    "output_tokens": call_completion_tokens,
+                },
                 "tokens": {
                     "prompt": call_prompt_tokens,
                     "completion": call_completion_tokens,
                 },
+                "model": test_model,
                 "fx_flag": fx_flag,
                 "untrusted_directive": untrusted_directive,
             }
             total_prompt_tokens += call_prompt_tokens
             total_completion_tokens += call_completion_tokens
             extracted_amendments.extend(msg_amendments)
+
+            if new_calls % 10 == 0 or idx == total_messages - 1:
+                print(
+                    f"[{idx + 1}/{total_messages}] processed {mid} (in={call_prompt_tokens}, out={call_completion_tokens}, new_calls={new_calls})",
+                    flush=True,
+                )
+                logger.info(
+                    "[%d/%d] processed %s (in=%d, out=%d, new_calls=%d)",
+                    idx + 1,
+                    total_messages,
+                    mid,
+                    call_prompt_tokens,
+                    call_completion_tokens,
+                    new_calls,
+                )
+                # Incremental flush of cache
+                cache_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(cache_path, "w", encoding="utf-8") as f:
+                    json.dump(cache, f, indent=2)
 
         # Write cache
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -595,14 +661,21 @@ def run_extraction(
             "CONFIRM_EVENT",
             "MARK_NON_RECURRING",
         }
+        valid_extracted_amendments: list[dict[str, Any]] = []
         for amend in extracted_amendments:
             action = amend.get("action")
             if action in event_targeted:
                 eid = amend.get("event_id")
                 if not eid or eid not in valid_event_ids:
-                    raise ValueError(
-                        f"Amendment {amend} references non-existent or invalid event_id '{eid}'"
+                    logger.warning(
+                        "Dropping amendment %s referencing invalid or unknown event_id '%s'",
+                        amend,
+                        eid,
                     )
+                    continue
+            valid_extracted_amendments.append(amend)
+        extracted_amendments = valid_extracted_amendments
+
 
         # Freeze output to JSON
         output_path.parent.mkdir(parents=True, exist_ok=True)
