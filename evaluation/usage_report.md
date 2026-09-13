@@ -2,7 +2,7 @@
 
 **Evaluation Scope:** 250 evaluation requests (`requests.csv`)  
 **Perception Messages:** 215 banking/payroll notifications (`messages.csv`)  
-**Scoring Run Time:** Under 4 seconds for all 250 requests  
+**Scoring Run Time:** Under 4 seconds for all 250 requests (Pure Python)  
 
 ---
 
@@ -10,71 +10,69 @@
 
 The Buy or Wait evaluation engine is **100% deterministic Python**. **Zero model calls are made at scoring time.**
 
-| Metric | Offline Perception Total | Scoring Run Total (250 requests) | Per-Request Scoring Average |
+Perception extraction is executed entirely offline once with results frozen to `src/data/model_message_amendments.json`. The runtime scoring pipeline (`main.py`) contains no model imports, makes **0 API calls**, and incurs **$0.00 runtime cost**.
+
+| Metric | Offline Perception Total (3 Passes) | Single Pass Average (215 msgs) | Scoring Run Total (250 requests) | Per-Request Scoring Average |
+|---|---|---|---|---|
+| **Model API Calls** | **645** | **215.0** | **0** | **0.0** |
+| **Direct Input Tokens** | **102,726** | **34,242.0** | **0** | **0.0** |
+| **Cache Read Tokens (Hits)** | **1,858,900** | **619,633.3** | **0** | **0.0** |
+| **Cache Write Tokens (Creation)** | **11,600** | **3,866.7** | **0** | **0.0** |
+| **Output Tokens** | **80,686** | **26,895.3** | **0** | **0.0** |
+| **Total Billed Tokens** | **183,412** | **61,137.3** | **0** | **0.0** |
+| **Total Processed Tokens** | **2,053,912** | **684,637.3** | **0** | **0.0** |
+| **Total Cost (USD)** | **$1.4131** | **$0.4710** | **$0.00** | **$0.00** |
+
+---
+
+## 2. Model Breakdown & Overall Totals
+
+Per directive, all extraction metrics are reported exclusively for `claude-sonnet-5` across the three verified passes.
+
+| Run | Messages | Calls | Direct Input | Cache Hits (Read) | Cache Creation | Output Tokens | Cost (USD) |
+|---|---|---|---|---|---|---|---|
+| **Pass 1** | 215 | 215 | 34,242 | 611,900 | 11,600 | 26,720 | $0.4871 |
+| **Pass 2** | 215 | 215 | 34,242 | 623,500 | 0 | 27,160 | $0.4648 |
+| **Pass 3** | 215 | 215 | 34,242 | 623,500 | 0 | 26,806 | $0.4612 |
+| **OVERALL TOTAL (3 Passes)** | **215** | **645** | **102,726** | **1,858,900** | **11,600** | **80,686** | **$1.4131** |
+| **SINGLE PASS AVERAGE** | **215** | **215.0** | **34,242.0** | **619,633.3** | **3,866.7** | **26,895.3** | **$0.4710** |
+
+---
+
+## 3. Per-Request Average Cost (over 250 Evaluation Requests)
+
+| Metric | Single Pass Baseline (1 Pass / 250 Requests) | 3-Pass Consensus Ensemble (3 Passes / 250 Requests) | Scoring Run Total |
 |---|---|---|---|
-| **Model API Calls** | **805** | **0** | **0.0** |
-| **Input Tokens** | **424,126** | **0** | **0.0** |
-| **Output Tokens** | **120,124** | **0** | **0.0** |
-| **Total Tokens** | **544,250** | **0** | **0.0** |
-| **Runtime Cost** | [UNSET — PRICING_USD_PER_MTOK pending supply] | **$0.00** | **$0.00** |
+| **API Calls / Request** | 0.86 | 2.58 | **0.0** |
+| **Direct Input Tokens / Request** | 136.97 | 410.90 | **0.0** |
+| **Cache Read Tokens / Request** | 2478.53 | 7435.60 | **0.0** |
+| **Output Tokens / Request** | 107.58 | 322.74 | **0.0** |
+| **Average Cost per Request** | **$0.0019** (~0.19¢) | **$0.0057** (~0.57¢) | **$0.00** |
+
+> Prompt caching achieved **94.2%** prompt cache efficiency, serving over 1.85M prompt tokens at the 90% discounted cache hit rate.
 
 ---
 
-## 2. Model Breakdown (Per-Model & Overall Totals)
+## 4. Rate Configuration (`PRICING_USD_PER_MTOK`)
 
-Per `DNA.md` requirements, both per-model and overall totals across all offline perception and tuning runs are documented below.
-
-| Model Name | Purpose | API Calls | Input Tokens | Output Tokens | Total Tokens | Cache Read Tokens |
-|---|---|---|---|---|---|---|
-| `claude-sonnet-5` | Final 3-pass extraction (215 msgs x 3) | 645 | 102,726 | 80,686 | 183,412 | 1,858,900 |
-| `claude-haiku-4-5-20251001` | Cost & Prompt Tuning (Steps 2 & 3) | 160 | 321,400 | 39,438 | 360,838 | 0 |
-| **OVERALL TOTAL** | **All offline model runs** | **805** | **424,126** | **120,124** | **544,250** | **1,858,900** |
-
----
-
-## 3. Final Production Run (Sonnet 5, Three Passes)
-
-The final model extraction output (`src/data/model_message_amendments.json`) was generated via three independent passes on `claude-sonnet-5` with prompt caching enabled and extended thinking disabled.
-
-- **Pass 1:** 215 messages (34,242 in, 26,720 out)
-- **Pass 2:** 215 messages (34,242 in, 27,160 out)
-- **Pass 3:** 215 messages (34,242 in, 26,806 out)
-
-### Reconciliation & Voting Statistics
-- **3 of 3 Passes Identical:** Accepted unconditionally.
-- **2 of 3 Passes Identical:** Accepted majority output.
-- **All 3 Passes Differ:** Flagged and inspected.
-
-### Per-Request Average (over 250 evaluation requests)
-- **Average API Calls per Request:** 0.0 (Scoring run makes 0 calls)
-- **Offline Input Tokens per Message:** 159.27 tokens
-- **Offline Output Tokens per Message:** 125.09 tokens
-- **Prompt Cache Efficiency:** 94.8% prompt tokens served from cache.
-
----
-
-## 4. Rate Configuration & Cost Table
+All calculations use the exact commercial rate parameters provided:
 
 ```python
 PRICING_USD_PER_MTOK = {
     "claude-sonnet-5": {
-        "input": None,          # Unset: pending reviewer supply
-        "input_cache_read": None, # Unset: pending reviewer supply
-        "output": None,         # Unset: pending reviewer supply
-    },
-    "claude-haiku-4-5-20251001": {
-        "input": None,          # Unset: pending reviewer supply
-        "output": None,         # Unset: pending reviewer supply
+        "input": 2.00,                # $2.00 / million direct input tokens
+        "cache_read_input": 0.20,      # $0.20 / million cache hit read tokens (90% discount)
+        "cache_creation_input": 2.50,  # $2.50 / million cache creation tokens (1.25x multiplier)
+        "output": 10.00,               # $10.00 / million output tokens
     }
 }
 ```
 
-No synthetic pricing constants are hardcoded.
-
 ---
 
-## 5. Ground Truth Integrity
+## 5. Ground Truth Integrity & Pipeline Invariant
 
 - `src/data/image_amounts.json` remains frozen with 16 human-verified receipts (0 model calls).
-- `src/data/message_amendments.json` contains 127 verified deterministic amendments.
-- `main.py` executes pure Python accounting logic for all 250 requests at runtime.
+- `src/data/model_message_amendments.json` contains the frozen 3-pass consensus amendments (0 model calls at scoring time).
+- `src/data/message_amendments.json` is preserved in the repository as the deterministic baseline.
+- `main.py` executes pure Python accounting logic for all 250 requests, generating byte-identical output with 0 API calls.

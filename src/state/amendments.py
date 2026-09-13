@@ -45,7 +45,9 @@ from observability import bind_context, init_logging
 
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-DEFAULT_AMENDMENTS_PATH = _REPO_ROOT / "src" / "data" / "message_amendments.json"
+DETERMINISTIC_AMENDMENTS_PATH = _REPO_ROOT / "src" / "data" / "message_amendments.json"
+MODEL_AMENDMENTS_PATH = _REPO_ROOT / "src" / "data" / "model_message_amendments.json"
+DEFAULT_AMENDMENTS_PATH = MODEL_AMENDMENTS_PATH
 
 logger = logging.getLogger("state.amendments")
 ALLOWED_EXPENSE_CATEGORIES: frozenset[str] = frozenset({

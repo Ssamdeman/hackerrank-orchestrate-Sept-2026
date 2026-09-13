@@ -154,7 +154,9 @@ def run_pipeline(
     raw_options = load_request_payment_options(data_dir / "request_payment_options.csv")
     rates = load_exchange_rates(data_dir / "exchange_rates.csv")
     fx_table = build_fx_table(rates)
-    amendments = load_message_amendments()
+    amendments_path = _SRC_DIR / "data" / "model_message_amendments.json"
+    amendments = load_message_amendments(amendments_path)
+    logger.info("Loaded %d primary model message amendments from %s", len(amendments), amendments_path)
 
     # Index options by request_id
     options_by_req: dict[str, list[RequestPaymentOption]] = {}
