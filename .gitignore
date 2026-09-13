@@ -15,4 +15,9 @@ wheels/
 # Runtime logs and typing cache
 logs/
 .mypy_cache/
-
+.cache/
+**/.cache/
+# Environment and secrets
+.env
+*.env
+.env.*

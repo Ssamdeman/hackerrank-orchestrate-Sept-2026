@@ -284,3 +284,213 @@ class DatasetBundle:
     images: tuple[ImageMetadata, ...]
     sample_requests: tuple[SampleRequest, ...]
     output_template: tuple[OutputRow, ...]
+
+
+# ---------------------------------------------------------------------------
+# Amendment Models (Phase 2 - Closed Set from contract §10.2)
+# ---------------------------------------------------------------------------
+
+class AmendmentAction(str, Enum):
+    """Closed amendment action set from decision_contract.md §10.2 & directive #10."""
+    AMEND_AMOUNT = "AMEND_AMOUNT"
+    CANCEL_EVENT = "CANCEL_EVENT"
+    DELAY_EVENT = "DELAY_EVENT"
+    CONFIRM_EVENT = "CONFIRM_EVENT"
+    ADD_CONFIRMED_INCOME = "ADD_CONFIRMED_INCOME"
+    AMEND_RECURRING_AMOUNT = "AMEND_RECURRING_AMOUNT"
+    TERMINATE_SERIES = "TERMINATE_SERIES"
+    ADD_RECURRING_EXPENSE = "ADD_RECURRING_EXPENSE"
+    MARK_NON_RECURRING = "MARK_NON_RECURRING"
+    ESTABLISH_SERIES = "ESTABLISH_SERIES"
+
+
+@dataclass(frozen=True)
+class AmendAmount:
+    """Explicit amendment of an existing event's amount."""
+    event_id: str
+    new_amount: Decimal
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.AMEND_AMOUNT
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class CancelEvent:
+    """Explicit cancellation of an existing event."""
+    event_id: str
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.CANCEL_EVENT
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class DelayEvent:
+    """Postponement of an existing event to a new date."""
+    event_id: str
+    new_date: date
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.DELAY_EVENT
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class ConfirmEvent:
+    """Confirmation or settlement of an existing event."""
+    event_id: str
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.CONFIRM_EVENT
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class AddConfirmedIncome:
+    """Addition of a confirmed forward income flow."""
+    date: date
+    amount: Decimal
+    currency: str
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.ADD_CONFIRMED_INCOME
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class AmendRecurringAmount:
+    """Amendment of recurring series amount (series_key, new_amount, effective_date)."""
+    series_key: str
+    new_amount: Decimal
+    effective_date: date
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.AMEND_RECURRING_AMOUNT
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class TerminateSeries:
+    """Termination of a recurring series (series_key, final_date)."""
+    series_key: str
+    final_date: date
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.TERMINATE_SERIES
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class AddRecurringExpense:
+    """Addition of a recurring expense (user_id, amount, currency, start_date, category)."""
+    user_id: str
+    amount: Decimal | None
+    currency: str
+    start_date: date
+    category: str
+    message_id: str
+    action: AmendmentAction = AmendmentAction.ADD_RECURRING_EXPENSE
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class MarkNonRecurring:
+    """Mark an event as non-recurring (event_id)."""
+    event_id: str
+    message_id: str
+    user_id: str
+    action: AmendmentAction = AmendmentAction.MARK_NON_RECURRING
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+@dataclass(frozen=True)
+class EstablishSeries:
+    """Establish a new recurring series from a message (user_id, amount, currency, start_date, cadence_day)."""
+    user_id: str
+    amount: Decimal
+    currency: str
+    start_date: date
+    series_key: str = "salary"
+    category: str = "salary"
+    description: str = "New employer payroll"
+    cadence_day: int = 15
+    message_id: str = ""
+    action: AmendmentAction = AmendmentAction.ESTABLISH_SERIES
+    source_message_id: str = ""
+    source_substring: str = ""
+    template_id: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.source_message_id:
+            object.__setattr__(self, "source_message_id", self.message_id)
+
+
+type Amendment = (
+    AmendAmount
+    | CancelEvent
+    | DelayEvent
+    | ConfirmEvent
+    | AddConfirmedIncome
+    | AmendRecurringAmount
+    | TerminateSeries
+    | AddRecurringExpense
+    | MarkNonRecurring
+    | EstablishSeries
+)
+
+

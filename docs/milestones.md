@@ -47,6 +47,7 @@ Each has a default if unresolved — none can block the build.
 | V7 | `request_text` audit — amounts, dates, method language | §4.13 | 100% amounts match requested_amount (inc. IDR dot format); 0 text conflicts | passed | |
 | V8 | Composition of bimodal series keys | §4.1 bimodal nature | 231 series: 219 debit (109 transport, 80 groceries, 30 dining), 12 credit (salary); 9 reducible, 222 fixed | passed | |
 | V9 | Distribution & composition of sub-threshold series (< 3 events) | Recurrence handling | 3,492 series: 1,893 count=1, 1,599 count=2; event_989 is count=2; 289 count=2 are reducible | passed | |
+| V10 | Bimodal salary series composition & message linkage | Recurrence / gig income | 12 series (11 users), 0 scheduled rows, 9 service_provider messages | passed | |
 
 
 **V4 is the priority.** It is the only open item that can produce a dangerous
@@ -61,7 +62,7 @@ From `architecture.md` §7. Each phase gates the next.
 | Phase | Builds | Gate | Status | Signed off |
 |---|---|---|---|---|
 | 1 | `models.py`, `dataio/loaders.py`, `state/fx.py` | All 9 CSVs load; 16 amounts merge; all 140 FX events resolve | passed | |
-| 2 | `llm/extract_messages.py` → frozen JSON; `state/amendments.py` | Amendments apply cleanly; nothing outside the typed set | not started | |
+| 2 | `llm/extract_messages.py` → frozen JSON; `state/amendments.py` | Amendments apply cleanly; nothing outside the typed set | passed | |
 | 3 | `state/recurrence.py` | Diagnostic report hand-reviewed for 5 users; V5 clean | not started | |
 | 4 | `forecast/engine.py`, `verify/safety.py` | `amount_safe_to_pay` matches on requests 03, 16, 17 | not started | |
 | 5 | `planner/*` | Full 25-row calibration run; accuracy measured per field | not started | |
