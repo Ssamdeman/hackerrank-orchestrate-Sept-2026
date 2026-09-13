@@ -8,6 +8,8 @@ Built in Python 3.14 with strict type safety, zero scoring-time model dependenci
 
 ## 1. Quick Start
 
+This repository contains a fully runnable solution. Follow the instructions below to execute the evaluation pipeline end-to-end.
+
 ### Prerequisites
 - Python 3.14 (managed via `.python-version`)
 - [uv](https://github.com/astral-sh/uv) package manager

@@ -1,0 +1,27 @@
+Development and System Usage Log
+
+1. Requirements Analysis & Planning
+- Read DNA.md, architecture.md, and decision_contract.md to understand the exact constraints (Python 3.14, no runtime LLM, strict mypy).
+- Planned out the 10 stages of the pipeline: Load, Normalize, Reconstruct, Forecast, Generate, Test, Rank, Explain, Validate, Write.
+- Setup strict type checking with mypy and Python 3.14 via uv.
+
+2. Architecture Implementation
+- Implemented core domain models in src/domain (Money, Dates, etc) ensuring strict Decimal usage for all money.
+- Created loaders for dataset CSVs with strict schema validation.
+- Processed FX rates and amendments.
+- Built forecasting engine with 90-day cash flow projection using pure deterministic logic.
+
+3. Logic & Recommendation Engine
+- Implemented Candidate generation across payment options (Full, Installments, Wait, Not Recommended).
+- Evaluated candidates against safety minimum balance requirements.
+- Developed deterministic ranking based on decision rules.
+
+4. Validation and Output
+- Created explanation templates to format justifications deterministically.
+- Built rigorous validator checking 28 assertions before output.
+- Emitted output.csv matching the contract RFC 4180 format.
+
+5. Refinements
+- Executed offline LLM extraction (Claude Sonnet 3.5) for image/message data.
+- Froze model output to JSON to ensure zero runtime model dependencies and zero-cost scoring.
+- Finalized mypy strict types.
