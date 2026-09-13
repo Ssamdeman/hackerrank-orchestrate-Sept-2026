@@ -17,6 +17,7 @@ logs/
 .mypy_cache/
 .cache/
 **/.cache/
+.agents/
 # Environment and secrets
 .env
 *.env
