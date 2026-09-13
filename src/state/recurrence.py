@@ -701,29 +701,32 @@ def compute_user_trough_comparison(
         else:
             daily_flows_without_burn[occ.date] -= occ.amount
 
-    curr_bal_no_burn = opening_balance
-    curr_bal_with_burn = opening_balance
+    from forecast.engine import project
+    from models import Flow
 
-    trough_no_burn = opening_balance
-    trough_no_burn_date = request_date
-    trough_with_burn = opening_balance
-    trough_with_burn_date = request_date
+    flows_no_burn: list[Flow] = []
+    for d, net_amt in daily_flows_without_burn.items():
+        if net_amt > Decimal("0"):
+            flows_no_burn.append(Flow(date=d, amount=net_amt, direction=Direction.CREDIT, source_event_id=None, is_projected=False))
+        elif net_amt < Decimal("0"):
+            flows_no_burn.append(Flow(date=d, amount=-net_amt, direction=Direction.DEBIT, source_event_id=None, is_projected=False))
 
-    for day_idx in range(horizon_days + 1):
-        dt = request_date + timedelta(days=day_idx)
-        flow_no_burn = daily_flows_without_burn.get(dt, Decimal("0"))
-        curr_bal_no_burn += flow_no_burn
+    curve_no_burn = project(opening_balance, request_date, horizon_days, flows_no_burn)
 
-        flow_with_burn = flow_no_burn - daily_burn
-        curr_bal_with_burn += flow_with_burn
+    flows_with_burn = list(flows_no_burn)
+    if daily_burn > Decimal("0"):
+        for day_offset in range(horizon_days + 1):
+            dt = request_date + timedelta(days=day_offset)
+            flows_with_burn.append(
+                Flow(date=dt, amount=daily_burn, direction=Direction.DEBIT, source_event_id="burn", is_projected=True)
+            )
 
-        if curr_bal_no_burn < trough_no_burn:
-            trough_no_burn = curr_bal_no_burn
-            trough_no_burn_date = dt
+    curve_with_burn = project(opening_balance, request_date, horizon_days, flows_with_burn)
 
-        if curr_bal_with_burn < trough_with_burn:
-            trough_with_burn = curr_bal_with_burn
-            trough_with_burn_date = dt
+    trough_no_burn = curve_no_burn.trough()
+    trough_no_burn_date = curve_no_burn.trough_date()
+    trough_with_burn = curve_with_burn.trough()
+    trough_with_burn_date = curve_with_burn.trough_date()
 
     shift = trough_with_burn - trough_no_burn
     return TroughComparison(
@@ -746,11 +749,6 @@ def compute_amount_safe_to_pay(
     requested_amount: Decimal,
     trough_balance: Decimal,
 ) -> Decimal:
-    """Compute amount_safe_to_pay per decision-contract §7.
-
-    The largest amount payable on request_date, before spending changes,
-    that keeps the balance at or above minimum_balance_to_keep across
-    the 90-day window, capped at requested_amount.
-    """
+    """Legacy helper for scripts; canonical module is verify.safety.compute_amount_safe_to_pay(context)."""
     margin = trough_balance - minimum_balance_to_keep
     return min(requested_amount, max(Decimal("0"), margin))
