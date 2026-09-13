@@ -412,7 +412,7 @@ def resolve_user_recurrence(
             terminated_keys.add(a.series_key)
             for s in list(detected):
                 s_key_str = f"{s.key.user_id}_{s.key.description}_{s.key.currency}"
-                if a.series_key in (s_key_str, s.key.description) or (
+                if a.series_key in (s_key_str, s.key.description, s.key.category) or (
                     s.key.category == "salary" and "previous employer" in s.key.description.lower()
                 ):
                     terminated_descs.add(s.key.description)
@@ -421,6 +421,11 @@ def resolve_user_recurrence(
     # 2. establish new series
     for a in user_amends:
         if isinstance(a, EstablishSeries):
+            # Remove any existing detected series with same category + direction to avoid double-projection
+            detected = [
+                s for s in detected
+                if not (s.key.category == a.category and s.key.direction == Direction.CREDIT)
+            ]
             new_series = DetectedSeries(
                 key=SeriesKey(
                     user_id=user_id,
@@ -502,6 +507,18 @@ def resolve_user_recurrence(
                 )
 
     recurring_projections = list(project_user_series(detected, start_date=request_date, horizon_days=horizon_days))
+
+    # Deduplicate: drop one-time credits on dates already covered by a recurring salary credit
+    recurring_salary_dates: set[date] = {
+        occ.date
+        for occ in recurring_projections
+        if occ.direction == Direction.CREDIT and occ.category == "salary"
+    }
+    one_time_flows = [
+        occ for occ in one_time_flows
+        if occ.date not in recurring_salary_dates
+    ]
+
     all_projections = recurring_projections + one_time_flows
 
     if fx_table is not None and home_currency is not None:

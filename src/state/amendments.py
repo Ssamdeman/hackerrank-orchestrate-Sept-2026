@@ -53,7 +53,7 @@ ALLOWED_EXPENSE_CATEGORIES: frozenset[str] = frozenset({
     "cloud_storage", "shopping", "streaming", "debt_repayment", "entertainment",
     "insurance", "music_subscription", "healthcare", "delivery_membership",
     "education", "housing", "gym", "family_support", "investment",
-    "work_expense", "windfall"
+    "work_expense", "windfall",
 })
 
 

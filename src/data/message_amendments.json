@@ -1,65 +1,9 @@
 [
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "42750000",
-    "currency": "IDR",
-    "message_id": "message_01",
-    "user_id": "user_02"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "2717",
-    "currency": "EUR",
-    "message_id": "message_10",
-    "user_id": "user_14"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-01-15",
-    "amount": "1661",
-    "currency": "EUR",
-    "message_id": "message_11",
-    "user_id": "user_15"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_2165",
     "message_id": "message_17",
     "user_id": "user_24"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "30780000",
-    "currency": "IDR",
-    "message_id": "message_18",
-    "user_id": "user_26"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-02-15",
-    "amount": "54120",
-    "currency": "ZAR",
-    "message_id": "message_22",
-    "user_id": "user_32"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "196000",
-    "currency": "INR",
-    "message_id": "message_24",
-    "user_id": "user_34"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "2988",
-    "currency": "USD",
-    "message_id": "message_26",
-    "user_id": "user_36"
   },
   {
     "action": "CONFIRM_EVENT",
@@ -68,106 +12,10 @@
     "user_id": "user_38"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-06-15",
-    "amount": "1760",
-    "currency": "EUR",
-    "message_id": "message_29",
-    "user_id": "user_40"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-09-15",
-    "amount": "32870000",
-    "currency": "IDR",
-    "message_id": "message_31",
-    "user_id": "user_43"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-02-15",
-    "amount": "115000",
-    "currency": "INR",
-    "message_id": "message_32",
-    "user_id": "user_44"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "17290000",
-    "currency": "IDR",
-    "message_id": "message_33",
-    "user_id": "user_45"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_4535",
     "message_id": "message_35",
     "user_id": "user_48"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-06-15",
-    "amount": "69000",
-    "currency": "INR",
-    "message_id": "message_38",
-    "user_id": "user_52"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "42460",
-    "currency": "ZAR",
-    "message_id": "message_40",
-    "user_id": "user_54"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "2112",
-    "currency": "USD",
-    "message_id": "message_46",
-    "user_id": "user_62"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-04-15",
-    "amount": "116000",
-    "currency": "INR",
-    "message_id": "message_49",
-    "user_id": "user_66"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-05-15",
-    "amount": "696",
-    "currency": "USD",
-    "message_id": "message_53",
-    "user_id": "user_71"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "18700",
-    "currency": "ZAR",
-    "message_id": "message_54",
-    "user_id": "user_72"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "26180",
-    "currency": "ZAR",
-    "message_id": "message_56",
-    "user_id": "user_74"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-05-15",
-    "amount": "62000",
-    "currency": "INR",
-    "message_id": "message_63",
-    "user_id": "user_83"
   },
   {
     "action": "CONFIRM_EVENT",
@@ -176,82 +24,10 @@
     "user_id": "user_84"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-01-15",
-    "amount": "251000",
-    "currency": "INR",
-    "message_id": "message_66",
-    "user_id": "user_87"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "13420",
-    "currency": "ZAR",
-    "message_id": "message_68",
-    "user_id": "user_90"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "924",
-    "currency": "EUR",
-    "message_id": "message_72",
-    "user_id": "user_94"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "1804",
-    "currency": "EUR",
-    "message_id": "message_74",
-    "user_id": "user_98"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_9420",
     "message_id": "message_75",
     "user_id": "user_101"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-04-15",
-    "amount": "1419",
-    "currency": "EUR",
-    "message_id": "message_76",
-    "user_id": "user_102"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "1815",
-    "currency": "EUR",
-    "message_id": "message_80",
-    "user_id": "user_106"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-05-15",
-    "amount": "2123",
-    "currency": "EUR",
-    "message_id": "message_81",
-    "user_id": "user_107"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "16720",
-    "currency": "ZAR",
-    "message_id": "message_83",
-    "user_id": "user_110"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-06-15",
-    "amount": "627",
-    "currency": "EUR",
-    "message_id": "message_85",
-    "user_id": "user_112"
   },
   {
     "action": "CONFIRM_EVENT",
@@ -260,58 +36,10 @@
     "user_id": "user_115"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "1188",
-    "currency": "EUR",
-    "message_id": "message_89",
-    "user_id": "user_117"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-05-15",
-    "amount": "176000",
-    "currency": "INR",
-    "message_id": "message_91",
-    "user_id": "user_119"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_11129",
     "message_id": "message_92",
     "user_id": "user_120"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "15390000",
-    "currency": "IDR",
-    "message_id": "message_93",
-    "user_id": "user_122"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "748",
-    "currency": "EUR",
-    "message_id": "message_95",
-    "user_id": "user_125"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "152000",
-    "currency": "INR",
-    "message_id": "message_96",
-    "user_id": "user_126"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-09-15",
-    "amount": "50160",
-    "currency": "ZAR",
-    "message_id": "message_97",
-    "user_id": "user_127"
   },
   {
     "action": "CONFIRM_EVENT",
@@ -320,34 +48,10 @@
     "user_id": "user_129"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "828",
-    "currency": "USD",
-    "message_id": "message_104",
-    "user_id": "user_135"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-02-15",
-    "amount": "31900",
-    "currency": "ZAR",
-    "message_id": "message_107",
-    "user_id": "user_140"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_13032",
     "message_id": "message_108",
     "user_id": "user_141"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "2040",
-    "currency": "USD",
-    "message_id": "message_109",
-    "user_id": "user_142"
   },
   {
     "action": "CONFIRM_EVENT",
@@ -356,34 +60,10 @@
     "user_id": "user_143"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "864",
-    "currency": "USD",
-    "message_id": "message_111",
-    "user_id": "user_144"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-04-15",
-    "amount": "1529",
-    "currency": "EUR",
-    "message_id": "message_113",
-    "user_id": "user_147"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_13663",
     "message_id": "message_114",
     "user_id": "user_148"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-09-15",
-    "amount": "46170000",
-    "currency": "IDR",
-    "message_id": "message_116",
-    "user_id": "user_151"
   },
   {
     "action": "CONFIRM_EVENT",
@@ -392,216 +72,16 @@
     "user_id": "user_152"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-05-15",
-    "amount": "84000",
-    "currency": "INR",
-    "message_id": "message_120",
-    "user_id": "user_155"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-06-15",
-    "amount": "1672",
-    "currency": "EUR",
-    "message_id": "message_124",
-    "user_id": "user_160"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "26790000",
-    "currency": "IDR",
-    "message_id": "message_125",
-    "user_id": "user_161"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "29070000",
-    "currency": "IDR",
-    "message_id": "message_126",
-    "user_id": "user_162"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "2340",
-    "currency": "USD",
-    "message_id": "message_130",
-    "user_id": "user_166"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "1284",
-    "currency": "USD",
-    "message_id": "message_137",
-    "user_id": "user_173"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "2376",
-    "currency": "EUR",
-    "message_id": "message_141",
-    "user_id": "user_178"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "59000",
-    "currency": "INR",
-    "message_id": "message_143",
-    "user_id": "user_180"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-09-15",
-    "amount": "145000",
-    "currency": "INR",
-    "message_id": "message_149",
-    "user_id": "user_187"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_17401",
     "message_id": "message_150",
     "user_id": "user_188"
   },
   {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "627",
-    "currency": "EUR",
-    "message_id": "message_151",
-    "user_id": "user_189"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "38190000",
-    "currency": "IDR",
-    "message_id": "message_156",
-    "user_id": "user_197"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-01-15",
-    "amount": "2024",
-    "currency": "EUR",
-    "message_id": "message_162",
-    "user_id": "user_204"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-07-15",
-    "amount": "2424",
-    "currency": "USD",
-    "message_id": "message_169",
-    "user_id": "user_216"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-04-15",
-    "amount": "1914",
-    "currency": "EUR",
-    "message_id": "message_170",
-    "user_id": "user_219"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-01-15",
-    "amount": "35200",
-    "currency": "ZAR",
-    "message_id": "message_173",
-    "user_id": "user_222"
-  },
-  {
     "action": "CONFIRM_EVENT",
     "event_id": "event_20615",
     "message_id": "message_174",
     "user_id": "user_224"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-04-15",
-    "amount": "30400000",
-    "currency": "IDR",
-    "message_id": "message_178",
-    "user_id": "user_228"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-06-15",
-    "amount": "2772",
-    "currency": "EUR",
-    "message_id": "message_181",
-    "user_id": "user_232"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "16910000",
-    "currency": "IDR",
-    "message_id": "message_182",
-    "user_id": "user_233"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2026-01-15",
-    "amount": "62000",
-    "currency": "INR",
-    "message_id": "message_188",
-    "user_id": "user_240"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-08-15",
-    "amount": "968",
-    "currency": "EUR",
-    "message_id": "message_190",
-    "user_id": "user_242"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "1680",
-    "currency": "USD",
-    "message_id": "message_191",
-    "user_id": "user_245"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-12-15",
-    "amount": "53680",
-    "currency": "ZAR",
-    "message_id": "message_196",
-    "user_id": "user_250"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2024-06-15",
-    "amount": "214000",
-    "currency": "INR",
-    "message_id": "message_200",
-    "user_id": "user_256"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-05-15",
-    "amount": "1485",
-    "currency": "EUR",
-    "message_id": "message_204",
-    "user_id": "user_263"
-  },
-  {
-    "action": "ADD_CONFIRMED_INCOME",
-    "date": "2025-11-15",
-    "amount": "38280",
-    "currency": "ZAR",
-    "message_id": "message_210",
-    "user_id": "user_269"
   },
   {
     "action": "AMEND_RECURRING_AMOUNT",
@@ -702,5 +182,919 @@
     "new_amount": 702.0,
     "effective_date": "2025-12-27",
     "source_substring": "Your next salary is reduced to USD 702. The adjustment is due to approved unpaid leave."
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "42750000",
+    "effective_date": "2025-08-15",
+    "message_id": "message_01",
+    "user_id": "user_02"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "2717",
+    "currency": "EUR",
+    "start_date": "2025-08-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_10",
+    "user_id": "user_14"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "EUR",
+    "start_date": "2025-08-15",
+    "category": "family_support",
+    "message_id": "message_10",
+    "user_id": "user_14",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "1661",
+    "currency": "EUR",
+    "start_date": "2026-01-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_11",
+    "user_id": "user_15"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2025-08-15",
+    "amount": "30780000",
+    "currency": "IDR",
+    "message_id": "message_18",
+    "user_id": "user_26"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "54120",
+    "currency": "ZAR",
+    "start_date": "2025-02-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_22",
+    "user_id": "user_32"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2024-12-15",
+    "amount": "196000",
+    "currency": "INR",
+    "message_id": "message_24",
+    "user_id": "user_34"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "2988",
+    "effective_date": "2026-07-15",
+    "message_id": "message_26",
+    "user_id": "user_36"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "1760",
+    "currency": "EUR",
+    "start_date": "2024-06-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_29",
+    "user_id": "user_40"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-09-15",
+    "message_id": "message_31",
+    "user_id": "user_43"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "32870000",
+    "currency": "IDR",
+    "start_date": "2024-09-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_31",
+    "user_id": "user_43"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "115000",
+    "currency": "INR",
+    "start_date": "2025-02-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_32",
+    "user_id": "user_44"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "17290000",
+    "effective_date": "2026-07-15",
+    "message_id": "message_33",
+    "user_id": "user_45"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-06-15",
+    "message_id": "message_38",
+    "user_id": "user_52"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "69000",
+    "currency": "INR",
+    "start_date": "2024-06-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_38",
+    "user_id": "user_52"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "42460",
+    "effective_date": "2026-07-15",
+    "message_id": "message_40",
+    "user_id": "user_54"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2025-08-15",
+    "amount": "2112",
+    "currency": "USD",
+    "message_id": "message_46",
+    "user_id": "user_62"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2026-04-15",
+    "amount": "116000",
+    "currency": "INR",
+    "message_id": "message_49",
+    "user_id": "user_66"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "696",
+    "effective_date": "2025-05-15",
+    "message_id": "message_53",
+    "user_id": "user_71"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "18700",
+    "currency": "ZAR",
+    "start_date": "2026-07-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_54",
+    "user_id": "user_72"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2025-08-15",
+    "amount": "26180",
+    "currency": "ZAR",
+    "message_id": "message_56",
+    "user_id": "user_74"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "62000",
+    "currency": "INR",
+    "start_date": "2025-05-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_63",
+    "user_id": "user_83"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "INR",
+    "start_date": "2025-05-15",
+    "category": "family_support",
+    "message_id": "message_63",
+    "user_id": "user_83",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "251000",
+    "currency": "INR",
+    "start_date": "2026-01-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_66",
+    "user_id": "user_87"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "INR",
+    "start_date": "2026-01-15",
+    "category": "family_support",
+    "message_id": "message_66",
+    "user_id": "user_87",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2026-07-15",
+    "amount": "13420",
+    "currency": "ZAR",
+    "message_id": "message_68",
+    "user_id": "user_90"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2024-12-15",
+    "amount": "924",
+    "currency": "EUR",
+    "message_id": "message_72",
+    "user_id": "user_94"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "1804",
+    "effective_date": "2025-08-15",
+    "message_id": "message_74",
+    "user_id": "user_98"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2026-04-15",
+    "amount": "1419",
+    "currency": "EUR",
+    "message_id": "message_76",
+    "user_id": "user_102"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-12-15",
+    "message_id": "message_80",
+    "user_id": "user_106"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "1815",
+    "currency": "EUR",
+    "start_date": "2024-12-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_80",
+    "user_id": "user_106"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "2123",
+    "currency": "EUR",
+    "start_date": "2025-05-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_81",
+    "user_id": "user_107"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2025-08-15",
+    "amount": "16720",
+    "currency": "ZAR",
+    "message_id": "message_83",
+    "user_id": "user_110"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "627",
+    "currency": "EUR",
+    "start_date": "2024-06-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_85",
+    "user_id": "user_112"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "1188",
+    "effective_date": "2026-07-15",
+    "message_id": "message_89",
+    "user_id": "user_117"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "176000",
+    "currency": "INR",
+    "start_date": "2025-05-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_91",
+    "user_id": "user_119"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "INR",
+    "start_date": "2025-05-15",
+    "category": "family_support",
+    "message_id": "message_91",
+    "user_id": "user_119",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2025-08-15",
+    "amount": "15390000",
+    "currency": "IDR",
+    "message_id": "message_93",
+    "user_id": "user_122"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "748",
+    "effective_date": "2025-11-15",
+    "message_id": "message_95",
+    "user_id": "user_125"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2026-07-15",
+    "amount": "152000",
+    "currency": "INR",
+    "message_id": "message_96",
+    "user_id": "user_126"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "50160",
+    "currency": "ZAR",
+    "start_date": "2024-09-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_97",
+    "user_id": "user_127"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "ZAR",
+    "start_date": "2024-09-15",
+    "category": "family_support",
+    "message_id": "message_97",
+    "user_id": "user_127",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "828",
+    "effective_date": "2026-07-15",
+    "message_id": "message_104",
+    "user_id": "user_135"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "31900",
+    "currency": "ZAR",
+    "start_date": "2025-02-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_107",
+    "user_id": "user_140"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2024-12-15",
+    "amount": "2040",
+    "currency": "USD",
+    "message_id": "message_109",
+    "user_id": "user_142"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "864",
+    "currency": "USD",
+    "start_date": "2026-07-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_111",
+    "user_id": "user_144"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "1529",
+    "currency": "EUR",
+    "start_date": "2026-04-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_113",
+    "user_id": "user_147"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "EUR",
+    "start_date": "2026-04-15",
+    "category": "family_support",
+    "message_id": "message_113",
+    "user_id": "user_147",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-09-15",
+    "message_id": "message_116",
+    "user_id": "user_151"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "46170000",
+    "currency": "IDR",
+    "start_date": "2024-09-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_116",
+    "user_id": "user_151"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "84000",
+    "currency": "INR",
+    "start_date": "2025-05-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_120",
+    "user_id": "user_155"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "INR",
+    "start_date": "2025-05-15",
+    "category": "family_support",
+    "message_id": "message_120",
+    "user_id": "user_155",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-06-15",
+    "message_id": "message_124",
+    "user_id": "user_160"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "1672",
+    "currency": "EUR",
+    "start_date": "2024-06-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_124",
+    "user_id": "user_160"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "26790000",
+    "currency": "IDR",
+    "start_date": "2025-11-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_125",
+    "user_id": "user_161"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "29070000",
+    "effective_date": "2026-07-15",
+    "message_id": "message_126",
+    "user_id": "user_162"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2024-12-15",
+    "amount": "2340",
+    "currency": "USD",
+    "message_id": "message_130",
+    "user_id": "user_166"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "1284",
+    "effective_date": "2025-11-15",
+    "message_id": "message_137",
+    "user_id": "user_173"
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2024-12-15",
+    "amount": "2376",
+    "currency": "EUR",
+    "message_id": "message_141",
+    "user_id": "user_178"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "59000",
+    "currency": "INR",
+    "start_date": "2026-07-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_143",
+    "user_id": "user_180"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-09-15",
+    "message_id": "message_149",
+    "user_id": "user_187"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "145000",
+    "currency": "INR",
+    "start_date": "2024-09-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_149",
+    "user_id": "user_187"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "627",
+    "effective_date": "2026-07-15",
+    "message_id": "message_151",
+    "user_id": "user_189"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "38190000",
+    "currency": "IDR",
+    "start_date": "2025-11-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_156",
+    "user_id": "user_197"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "2024",
+    "currency": "EUR",
+    "start_date": "2026-01-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_162",
+    "user_id": "user_204"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "2424",
+    "effective_date": "2026-07-15",
+    "message_id": "message_169",
+    "user_id": "user_216"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "1914",
+    "currency": "EUR",
+    "start_date": "2026-04-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "Payroll after returning from leave",
+    "cadence_day": 15,
+    "message_id": "message_170",
+    "user_id": "user_219"
+  },
+  {
+    "action": "ADD_RECURRING_EXPENSE",
+    "amount": null,
+    "currency": "EUR",
+    "start_date": "2026-04-15",
+    "category": "family_support",
+    "message_id": "message_170",
+    "user_id": "user_219",
+    "source_substring": "A new recurring childcare payment begins in the same month."
+  },
+  {
+    "action": "ADD_CONFIRMED_INCOME",
+    "date": "2026-01-15",
+    "amount": "35200",
+    "currency": "ZAR",
+    "message_id": "message_173",
+    "user_id": "user_222"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "30400000",
+    "currency": "IDR",
+    "start_date": "2026-04-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_178",
+    "user_id": "user_228"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "2772",
+    "currency": "EUR",
+    "start_date": "2024-06-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_181",
+    "user_id": "user_232"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "16910000",
+    "currency": "IDR",
+    "start_date": "2025-11-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_182",
+    "user_id": "user_233"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "62000",
+    "currency": "INR",
+    "start_date": "2026-01-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_188",
+    "user_id": "user_240"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "968",
+    "currency": "EUR",
+    "start_date": "2025-08-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_190",
+    "user_id": "user_242"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "1680",
+    "effective_date": "2025-11-15",
+    "message_id": "message_191",
+    "user_id": "user_245"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2024-12-15",
+    "message_id": "message_196",
+    "user_id": "user_250"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "53680",
+    "currency": "ZAR",
+    "start_date": "2024-12-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "New employer payroll",
+    "cadence_day": 15,
+    "message_id": "message_196",
+    "user_id": "user_250"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "214000",
+    "currency": "INR",
+    "start_date": "2024-06-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_200",
+    "user_id": "user_256"
+  },
+  {
+    "action": "AMEND_RECURRING_AMOUNT",
+    "series_key": "salary",
+    "new_amount": "1485",
+    "effective_date": "2025-05-15",
+    "message_id": "message_204",
+    "user_id": "user_263"
+  },
+  {
+    "action": "ESTABLISH_SERIES",
+    "amount": "38280",
+    "currency": "ZAR",
+    "start_date": "2025-11-15",
+    "series_key": "salary",
+    "category": "salary",
+    "description": "First-job payroll",
+    "cadence_day": 15,
+    "message_id": "message_210",
+    "user_id": "user_269"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_09",
+    "user_id": "user_12",
+    "source_substring": "The current seasonal contract has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_21",
+    "user_id": "user_29",
+    "source_substring": "The current seasonal contract has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_45",
+    "user_id": "user_61",
+    "source_substring": "The current seasonal contract has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_57",
+    "user_id": "user_75",
+    "source_substring": "Your employment has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_84",
+    "user_id": "user_111",
+    "source_substring": "Hubungan kerja Anda telah berakhir"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_103",
+    "user_id": "user_133",
+    "source_substring": "Kontrak musiman saat ini telah berakhir"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_129",
+    "user_id": "user_165",
+    "source_substring": "Your employment has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_160",
+    "user_id": "user_201",
+    "source_substring": "Kontrak musiman saat ini telah berakhir"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_166",
+    "user_id": "user_213",
+    "source_substring": "The current seasonal contract has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_186",
+    "user_id": "user_237",
+    "source_substring": "Kontrak musiman saat ini telah berakhir"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_189",
+    "user_id": "user_241",
+    "source_substring": "Kontrak musiman saat ini telah berakhir"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_192",
+    "user_id": "user_246",
+    "source_substring": "Your employment has ended"
+  },
+  {
+    "action": "TERMINATE_SERIES",
+    "series_key": "salary",
+    "final_date": "2026-12-31",
+    "message_id": "message_206",
+    "user_id": "user_265",
+    "source_substring": "The current seasonal contract has ended"
+  },
+  {
+    "action": "MARK_NON_RECURRING",
+    "event_id": "event_14026",
+    "message_id": "message_117",
+    "user_id": "user_152",
+    "source_substring": "reimbursement for your earlier work expense"
+  },
+  {
+    "action": "MARK_NON_RECURRING",
+    "event_id": "event_17401",
+    "message_id": "message_150",
+    "user_id": "user_188",
+    "source_substring": "reimbursement for your earlier work expense"
+  },
+  {
+    "action": "MARK_NON_RECURRING",
+    "event_id": "event_20615",
+    "message_id": "message_174",
+    "user_id": "user_224",
+    "source_substring": "penggantian atas biaya kerja"
   }
 ]

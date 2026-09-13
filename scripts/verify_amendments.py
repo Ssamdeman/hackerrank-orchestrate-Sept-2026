@@ -58,9 +58,27 @@ def audit_amendments(
         sample_request_dates = {r["user_id"]: date.fromisoformat(r["request_date"]) for _, r in sample_df.iterrows()}
 
         # -------------------------------------------------------------
-        # Part A: BREAKDOWN
+        # Part A: BREAKDOWN & HARD ACTION COUNT ASSERTIONS
         # -------------------------------------------------------------
         action_counts = Counter(a["action"] for a in amendments)
+
+        EXPECTED_ACTION_COUNTS: dict[str, int] = {
+            "CONFIRM_EVENT": 14,
+            "AMEND_RECURRING_AMOUNT": 25,
+            "ESTABLISH_SERIES": 35,
+            "ADD_RECURRING_EXPENSE": 8,
+            "ADD_CONFIRMED_INCOME": 15,
+            "TERMINATE_SERIES": 20,
+            "MARK_NON_RECURRING": 3,
+        }
+        for act, exp_cnt in EXPECTED_ACTION_COUNTS.items():
+            act_cnt = action_counts.get(act, 0)
+            assert act_cnt == exp_cnt, (
+                f"HARD RULE VIOLATION: action '{act}' count mismatch: got {act_cnt}, expected {exp_cnt}"
+            )
+        assert sum(action_counts.values()) == 120, (
+            f"HARD RULE VIOLATION: total amendments count mismatch: got {sum(action_counts.values())}, expected 120"
+        )
 
         # -------------------------------------------------------------
         # Part B: THE 65 ADD_CONFIRMED_INCOME
@@ -308,6 +326,9 @@ def audit_amendments(
             "education", "housing", "gym", "family_support", "investment",
             "work_expense", "windfall"
         }
+        assert "childcare" not in ALLOWED_CATEGORIES, (
+            "HARD RULE VIOLATION: 'childcare' must not be in schema ALLOWED_CATEGORIES"
+        )
 
         childcare_expenses = [
             a for a in amendments
@@ -325,8 +346,11 @@ def audit_amendments(
             assert sub == "A new recurring childcare payment begins in the same month.", (
                 f"Childcare sentence mismatch in {mid}: '{sub}'"
             )
-            assert cat in ALLOWED_CATEGORIES or cat == "NEEDS_DECISION", (
+            assert cat in ALLOWED_CATEGORIES, (
                 f"Invalid category outside schema in {mid}: '{cat}'"
+            )
+            assert cat == "family_support", (
+                f"Childcare recurring expense must map to family_support, got: '{cat}'"
             )
             is_req = uid in req_users
             is_sample = uid in sample_users

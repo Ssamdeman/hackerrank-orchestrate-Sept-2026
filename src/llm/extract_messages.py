@@ -69,7 +69,7 @@ Closed Amendment Vocabulary (emit ONLY from this closed set):
 4. ADD_RECURRING_EXPENSE(user_id, amount, currency, start_date, category)
    Trigger: "regular salary resumes ... a new recurring childcare payment begins in the same month"
    Meaning: Both the salary income AND a new recurring childcare expense MUST be extracted.
-   Format: {"action": "ADD_RECURRING_EXPENSE", "amount": null, "currency": "<currency_of_user>", "start_date": "YYYY-MM-DD", "category": "childcare"}
+   Format: {"action": "ADD_RECURRING_EXPENSE", "amount": null, "currency": "<currency_of_user>", "start_date": "YYYY-MM-DD", "category": "family_support"}
    CRITICAL: Never drop the childcare expense!
 
 5. MARK_NON_RECURRING(event_id)
@@ -331,7 +331,7 @@ def _semantic_extract(
                 "amount": None,
                 "currency": curr,
                 "start_date": dt,
-                "category": "childcare",
+                "category": "family_support",
                 "message_id": message_id,
             })
             return amendments, fx_flag, False
